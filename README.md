@@ -107,17 +107,27 @@ We can generate basic graphs as follows:
 
 ```
 streamplot new_cases date, by(region)
+```
 
-streamplot new_cases date if date > 22400, by(region) palette(twilight) 
+<img src="/figures/streamplot1.png" height="600">
 
+```
+streamplot new_cases date if date > 22400, by(region) palette(scico corko) lw(0.02)
+```
+
+<img src="/figures/streamplot2.png" height="600">
+
+```
 streamplot new_cases date, by(region) xlinew(medium)
+```
 
+<img src="/figures/streamplot3.png" height="600">
+
+```
 streamplot new_cases date, by(region) xlinec(none)
 ```
 
-<img src="/figures/streamplot1.png" height="250"><img src="/figures/streamplot2.png" height="250">
-<img src="/figures/streamplot3.png" height="250"><img src="/figures/streamplot4.png" height="250">
-
+<img src="/figures/streamplot4.png" height="600">
 
 
 We can add additional options, for example, conditional labeling:

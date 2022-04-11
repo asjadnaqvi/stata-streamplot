@@ -203,7 +203,7 @@ drop lastsum*
 	}	
 	
 	if "`palette'" == "" {
-		local mycolor CET C6
+		local mycolor "CET C6"
 	}
 	else {
 		local mycolor `palette'
