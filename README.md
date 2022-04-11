@@ -114,8 +114,8 @@ streamplot new_cases date, by(region) xlinew(medium)
 streamplot new_cases date, by(region) xlinec(none)
 ```
 
-<img src="/figures/streamplot1.png" height="200"><img src="/figures/streamplot2.png" height="200">
-<img src="/figures/streamplot3.png" height="200"><img src="/figures/streamplot4.png" height="200">
+<img src="/figures/streamplot1.png" height="250"><img src="/figures/streamplot2.png" height="250">
+<img src="/figures/streamplot3.png" height="250"><img src="/figures/streamplot4.png" height="250">
 
 
 
