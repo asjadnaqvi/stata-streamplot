@@ -61,7 +61,7 @@ The most basic use is as follows:
 streamplot y x, by(varname)
 ```
 
-where `y` is the variable we want to plot, and `x` is usually the time dimension. The `by` variable splits the data into different groupings that also determine the colors.
+where `y` is the variable we want to plot, and `x` is usually the time dimension. The `by` variable splits the data into different groupings that also determines the colors. The color schemes can be modified using the `palettes(name)` option. Here any scheme from the `colorpalettes` package can be used.
 
 
 
