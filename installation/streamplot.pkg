@@ -1,0 +1,23 @@
+v 1.0
+d {bf:STREAMPLOT}: 
+d
+d
+d Requires: Stata version 15 or higher.
+d
+d KW: Stata
+d KW: graphs
+d KW: streamplot
+d
+d This  version: 04 Apr 2022
+d First version: 05 Dec 2021
+d License: MIT
+d
+d Author: Asjad Naqvi (asjadnaqvi@gmail.com)
+d
+f streamplot.ado
+f streamplot.sthlp
+
+
+
+
+
