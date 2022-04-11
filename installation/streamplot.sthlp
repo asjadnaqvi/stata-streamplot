@@ -74,8 +74,6 @@ The {browse "http://repec.sowi.unibe.ch/stata/palettes/index.html":palette} pack
 Load the data and clean it up:
 use "https://github.com/asjadnaqvi/The-Stata-Guide/blob/master/data/OWID_data.dta?raw=true", clear
 
-keep date new_cases country
-
 gen region = .
 	replace region = 1 if group29==1 & country=="United States" // North America
 	replace region = 2 if group29==1 & country!="United States" // North America
@@ -97,6 +95,8 @@ lab de region  1 "United States" 2 "Rest of North America" 3 "Brazil" 4 "Rest of
 		11 "India" 12 "Rest of South Asia" 13 "East Asia and Pacific"
 
 lab val region region
+
+keep date new_cases country region
 
 - Basic use:
 
