@@ -1,6 +1,6 @@
 # streamplot v1.1
 
-This package provides the ability to generate stream plots in Stata. It is based on the [Streamplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-10-stream-graphs-9d55db12318a) on Medium that I released in December 2020.
+This package provides the ability to generate stream plots in Stata. It is based on the [Streamplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-10-stream-graphs-9d55db12318a) on Medium that I released on December 2020.
 
 
 ## Installation
@@ -13,7 +13,7 @@ ssc install streamplot, replace
 Or it can be installed from GitHub:
 
 ```
-net install streamplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-streamplot/main/installation/") replace force
+net install streamplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-streamplot/main/installation/") replace
 ```
 
 The GitHub version, *might* be more recent due to bug fixes, feature updates etc.
@@ -167,10 +167,10 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to
 ## Versions
 
 **v1.1 (08 Apr 2022)**
-- File for public release. Several options and features added.
+- Public release. Several options and features added.
 
 **v1.0 (06 Aug 2021)**
-- First release of the baseline version.
+- Beta version
 
 
 
