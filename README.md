@@ -7,12 +7,12 @@ This package provides the ability to generate stream plots in Stata. It is based
 
 ## Installation
 
-The package is available on SSC and can be installed as follows:
+The package is available on SSC (v1.1):
 ```
 ssc install streamplot, replace
 ```
 
-Or it can be installed from GitHub:
+Or it can be installed from GitHub (v1.1):
 
 ```
 net install streamplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-streamplot/main/installation/") replace
