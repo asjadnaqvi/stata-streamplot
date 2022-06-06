@@ -112,7 +112,7 @@ keep date new_cases country region
 We can generate basic graphs as follows:
 
 ```
-streamplot new_deaths date, by(region)
+streamplot new_cases date, by(region)
 ```
 
 <img src="/figures/streamplot1.png" height="600">
