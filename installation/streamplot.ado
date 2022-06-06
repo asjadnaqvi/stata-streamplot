@@ -1,4 +1,7 @@
-*! streamplot v1.1 Naqvi 08.Apr.2022
+*! streamplot v1.2: passthru optimizations. error checks. reduce the default smoothing. 
+*! Asjad Naqvi (asjadnaqvi@gmail.com)
+*! 06 Jun 2022: passthru options added. bug fixes
+* v1.1 08.Apr.2022
 * v1.0 06.Aug.2021
 
 **********************************
@@ -18,11 +21,10 @@ program streamplot, sortpreserve
 
 version 15
  
-	syntax varlist(min=2 max=2 numeric) [if] [in], by(varname) [palette(string) alpha(real 80) smooth(real 6)] ///
-		[ LColor(string)  LWidth(string) XLABSize(real 2) labcond(string) ] ///
-		[ XLINEPattern(string) XLINEColor(string) XLINEWidth(string) ] ///
-		[ YLABSize(real 1.4) YLABel(varname)  XLABColor(string) YLABColor(string)  ] ///
-		[ xticks(string) title(string) subtitle(string) note(string) scheme(string) ] ///
+	syntax varlist(min=2 max=2 numeric) [if] [in], by(varname) [palette(string) alpha(real 80) smooth(real 3)] ///
+		[ LColor(string)  LWidth(string) labcond(string) ] 		///					
+		[ YLABSize(real 1.4) YLABel(varname)  YLABColor(string) offset(real 0.12)    ] ///
+		[ xlabel(passthru) xtitle(passthru) title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)  ] ///
 		[  allopt graphopts(string asis) * ] 
 		
 		// xtitle(string) ytitle(string) removed for now.
@@ -36,26 +38,38 @@ version 15
 	}	
 	
 	
+	
+	
 	marksample touse, strok
 	gettoken yvar xvar : varlist 	
 	
 qui {
 preserve	
+		
+		levelsof `xvar'
+		if `r(r)' < 5 {
+			di as err "The variable{it:`xvar'} has less than 5 obvervations per group. Please choose a dataset with a longer time series."
+			exit
+		}
+		
 		collapse (sum) `yvar' if `touse', by(`xvar' `by')
 
 		xtset `by' `xvar' 
 			
+	// this is technically wrong but we do it anyways
+	replace `yvar' = 0 if `yvar' < 0	
 	
-	
-	tempvar `yvar'_ma7
+	tempvar `yvar'_ma7	
 	tssmooth ma ``yvar'_ma7'  = `yvar' , w(`smooth' 1 0) 
 
-
-	// this is technically wrong but we do it anyways
-	replace `yvar' = 0 if `yvar' < 0
-
+	// add the range variable on the x-axis
+	summ `xvar' if ``yvar'_ma7' != .
+		local xrmin = r(min)
+		local xrmax = r(max) + ((r(max) - r(min)) * `offset') 
 	
+		// noi di "`xrmin' - `xrmax'"
 	
+
 	cap drop stack_`yvar'
 	
 	gen  stack_`yvar'	= .
@@ -124,8 +138,8 @@ drop meanval*
 
 // this part is for the mid points 		
 
-summ date
-gen last = 1 if date==r(max)
+summ `xvar'
+gen last = 1 if `xvar'==r(max)
 
 
 ds stack_`yvar'*norm
@@ -154,8 +168,6 @@ drop lastsum*
 **** automate this part
 
 
-
-
 	ds stack_`yvar'*norm
 	local items : word count `r(varlist)'
 	local items = `items' - 1
@@ -176,24 +188,6 @@ drop lastsum*
 
 
 
-	if "`xticks'" == "" {
-		summ `xvar'
-		local xmin = r(min)
-		local xmax = r(max) + (r(max) - r(min)) * 0.2
-		local gap = round((`xmax' - `xmin') / 10)
-		local xti  `xmin'(`gap')`xmax'
-	}
-	else {
-		local xti `xticks'
-	}	
-	
-
-	if "`xlabcolor'" == "" {
-		local xcolor  black
-	}
-	else {
-		local xcolor `xlabcolor'
-	}	
 	
 	if "`ylabcolor'" == "" {
 		local ycolor  black
@@ -223,12 +217,7 @@ drop lastsum*
 		local linew `lwidth'
 	}
 	
-	if "`xtitle'" == "" {
-		local xtitle = ""
-	}
-	else {
-		local xtitle = `xtitle'
-	}	
+	
 
 	/*   // removed for now
 	if "`xlinepattern'" != "" {
@@ -253,6 +242,10 @@ drop lastsum*
 	else {
 		local xw `xlinewidth'
 	}		
+	
+	
+
+	
 	
 
 summ stack_`yvar'0_norm	
@@ -291,11 +284,10 @@ colorpalette `mycolor', n(`numcolor') nograph
 	, ///
 		legend(off) ///
 		yscale(noline) xscale(noline) ///
-		ytitle("") xtitle("")  ///
+		ytitle("") `xtitle'  ///
 		ylabel(`ymin' `ymax', nolabels noticks nogrid) ///
-		xlabel(`xti', labsize(`xlabsize') labcolor(`xlabcolor') angle(vertical) glwidth(`xw') glpattern(solid) glcolor(`xc')) ///
-		title(`title') subtitle(`subtitle') ///
-		note(`note') scheme(`scheme')
+		`xlabel' xscale(range(`xrmin' `xrmax'))   ///  
+		`title' `subtitle' `note' `scheme' `xsize' `ysize'
 
 restore
 }		

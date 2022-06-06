@@ -1,5 +1,5 @@
-v 1.0
-d JOYPLOT: A package for creating ridgeline plots
+v 1.2
+d STREAMPLOT: A package for creating streamplots in Stata
 d
 d Asjad Naqvi, 
 d WU Vienna/IIASA, Austria

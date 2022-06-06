@@ -1,24 +1,26 @@
 ![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-streamplot) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-streamplot) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-streamplot) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-streamplot) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-streamplot)
 
-# streamplot v1.1
+# streamplot v1.2
 
 This package provides the ability to generate stream plots in Stata. It is based on the [Streamplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-10-stream-graphs-9d55db12318a) that I released in December 2020.
 
 
 ## Installation
 
-The package is available on SSC and can be installed as follows:
+The package can be installed via SSC or GitHub. The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers below. Eventually the GitHub version is published on SSC.
+
+SSC (**v1.1**):
 ```
 ssc install streamplot, replace
 ```
 
-Or it can be installed from GitHub:
+GitHub (**v1.2**):
 
 ```
 net install streamplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-streamplot/main/installation/") replace
 ```
 
-The GitHub version, *might* be more recent due to bug fixes, feature updates etc.
+
 
 The `palettes` package is required to run this command:
 
@@ -26,6 +28,8 @@ The `palettes` package is required to run this command:
 ssc install palettes, replace
 ssc install colrspace, replace
 ```
+
+Even if you have these packages installed, please check for updates: `ado update, update`.
 
 If you want to make a clean figure, then it is advisable to load a clean scheme. These are several available and I personally use the following:
 
@@ -49,10 +53,10 @@ graph set window fontface "Arial Narrow"
 The syntax is as follows:
 
 ```
-streamplot y x [if] [in], by(varname) [ palette(string) smooth(num) labcond(string) 
-                        lcolor(string) lwidth(string) xticks(string) xlabsize(num) ylabsize(num)
-                        xlabcolor(str) ylabcolor(str) xlinewidth(string) xlinecolor(string) 
-                        title(string) subtitle(string) note(string) scheme(str) ]
+streamplot y x [if] [in], by(varname) [ palette(str) smooth(num) labcond(str) 
+                        lcolor(str) lwidth(str) xlabel(str)
+						ylabsize(num)  ylabcolor(str) offset(num) 
+                        title(str) subtitle(str) note(str) xsize(num) ysize(num) scheme(str) ]
 ```
 
 See the help file `help streamplot` for details.
@@ -108,69 +112,55 @@ keep date new_cases country region
 We can generate basic graphs as follows:
 
 ```
-streamplot new_cases date, by(region)
+streamplot new_deaths date, by(region)
 ```
 
 <img src="/figures/streamplot1.png" height="600">
 
 ```
-streamplot new_cases date if date > 22400, by(region) palette(scico corko) lw(0.02)
+streamplot new_cases date if date > 22400, by(region) smooth(6)
 ```
 
 <img src="/figures/streamplot2.png" height="600">
 
 ```
-streamplot new_cases date, by(region) xlinew(medium)
+streamplot new_cases date if date > 22400, by(region) smooth(6) ///
+	title("My stream plot") note("test the note") ///
+	labcond(> 100000) ylabsize(1.8) lc(black) lw(0.04)
 ```
 
 <img src="/figures/streamplot3.png" height="600">
 
 ```
-streamplot new_cases date, by(region) xlinec(none)
+qui summ date if date > 22400
+
+local xmin = `r(min)'
+local xmax = `r(max)'
+
+streamplot new_cases date if date > 22400, by(region) smooth(6) ///
+	title("My stream plot") subtitle("Subtitle here") note("Note here") ///
+	labcond(> 100000) ylabsize(1.5) lc(white) lw(0.08) ///
+	xlabel(`xmin'(20)`xmax', angle(90)) xtitle("")
 ```
 
 <img src="/figures/streamplot4.png" height="600">
 
 
-We can add additional options, for example, conditional labeling:
 
-```
-streamplot new_cases date if date > 22400, by(region) smooth(5) ///
-        title("My stream plot") note("test the note") ///
-        labcond(> 100000) ylabsize(1.8) lc(black) lw(0.08)
-```
-
-<img src="/figures/streamplot5.png" height="600">
-
-Custom x-axis:
-
-```
-qui summ date if date > 22400
-
-local xmin = r(min)
-local xmax = r(max) + 40
-
-streamplot new_cases date if date > 22400, by(region) smooth(3) ///
-        title("My stream plot") subtitle("Subtitle here") note("Note here") ///
-        labcond(> 100000) ylabsize(1.5) xlabc(blue) ylabc(orange) lc(white) lw(0.08) ///
-        xticks(`xmin'(20)`xmax')
-```
-
-<img src="/figures/streamplot6.png" height="600">
 
 or a custom graph scheme:
 
 ```
-streamplot new_cases date if date > 22400, by(region) ///
-        title("My stream plot", size(6)) subtitle("Subtitle here", size(4)) note("Note here") ///
-        labcond(> 100000) ylabs(2.1) lc(black) lw(0.02) ///
-        scheme(neon) xlinec(gs4) 
+streamplot new_cases date if date > 22400, by(region) smooth(6) ///
+	title("My stream plot", size(6)) subtitle("Subtitle here", size(4))  ///
+	labcond(> 100000) ylabs(2) lc(black) lw(0.02) offset(0.3) xtitle("") ///
+	scheme(neon) 
 ```
 
 where the dark background `neon` scheme is loaded from the [schemepack](https://github.com/asjadnaqvi/Stata-schemes) suite.
 
 
-<img src="/figures/streamplot7.png" height="600">
+<img src="/figures/streamplot5.png" height="600">
 
 ## Feedback
 
@@ -178,6 +168,11 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to
 
 
 ## Versions
+
+**v1.2 (06 Jun 2022)**
+- Several graph options modified to passthru for better integration with twoway options.
+- Smoothing parameter adjusted
+- Error checks added. If there are too few observations per group, the command will abort.
 
 **v1.1 (08 Apr 2022)**
 - Public release. Several options and features added.

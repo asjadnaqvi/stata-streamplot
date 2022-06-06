@@ -1,7 +1,7 @@
 {smcl}
-{* 08April2022}{...}
+{* 06June2022}{...}
 {hi:help streamplot}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.1 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.2 (GitHub)}}
 
 {hline}
 
@@ -14,10 +14,9 @@ The command is based on the following guide on Medium: {browse "https://medium.c
 {marker syntax}{title:Syntax}
 {p 8 15 2}
 
-{cmd:streamplot} {it:y x} {ifin}, {cmd:by}(varname) {cmd:[} {cmd:palette}(string) {cmd:smooth}(num) {cmd:labcond}(string) 
-			{cmdab:lc:olor}(string) {cmdab:lw:idth}(string) {cmd:xticks}(string) {cmdab:xlabs:ize}({it:num}) {cmdab:ylabs:ize}({it:num})
-			{cmdab:xlabc:olor}({it:str}) {cmdab:ylabc:olor}({it:str}) {cmdab:xlinew:idth}(string) {cmdab:xlinec:olor}(string) 
-			{cmd:title}(string) {cmd:subtitle}(string) {cmd:note}(string) {cmd:scheme}({it:str}) {cmd:]}
+{cmd:streamplot} {it:y x} {ifin}, {cmd:by}(varname) {cmd:[} {cmd:palette}({it:str}) {cmd:smooth}({it:num}) {cmd:labcond}({it:str}) 
+			{cmdab:lc:olor}({it:str}) {cmdab:lw:idth}({it:str}) {cmdab:ylabs:ize}({it:num}) {cmdab:ylabc:olor}({it:str}) {cmd:offset}({it:num}) {cmd:xlabel}({it:str})
+			{cmd:xtitle}({it:str}) {cmd:ytitle}({it:str}) {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:note}({it:str}) {cmd:xsize}({it:num}) {cmd:ysize}({it:num}) {cmd:scheme}({it:str}) {cmd:]}
 
 
 {p 4 4 2}
@@ -33,25 +32,21 @@ The options are described as follows:
 
 {p2coldent : {opt palette(string)}}Color name is any named scheme defined in the {stata help colorpalette:colorpalette} package. Default is {stata colorpalette CET C6:{it:CET C6}}.{p_end}
 
-{p2coldent : {opt smooth(value)}}The data is smoothed based on a number of past observations. The default value 6. A value of 0 implies no smoothing.{p_end}
+{p2coldent : {opt smooth(value)}}The data is smoothed based on a number of past observations. The default value is {it:2}. A value of 0 implies no smoothing.{p_end}
+
+{p2coldent : {opt offset(value)}}Extends the x-axis range to accommodate labels. The default value is {it:0.12} or 12% of {it:xmax-xmin}. {p_end}
+
+{p2coldent : {opt xlabel()}}This is the standard twoway graph option for labeling and formatting the x-axis. {p_end}
 
 {p2coldent : {opt labcond(string)}}Labels have the group name and the value of the last observation in brackets. The label condition can be used to limit the number of labels shown. 
 For example if we want to label only values which are greater than a certain threhold, then we can write {it:labcond(>= 10000)}. Currently only one condition is supported. 
 Here the main aim is to clean up the figure especially if labels are bunched on top of each other. See example below.{p_end}
 
-{p2coldent : {opt xticks(string)}}This option can be used for customizing the x-axis ticks. See example below.{p_end}
-
 {p2coldent : {opt lw:idth(value)}}The line width of the area stroke. The default is {it:0.02}.{p_end}
 
 {p2coldent : {opt lc:olor(string)}}The line color of the area stroke. The default is {it:white}.{p_end}
 
-{p2coldent : {opt xlinew:idth(string)}}The width of the verticle grid lines.{p_end}
-
-{p2coldent : {opt xlinec:olor(string)}}The color of the verticle grid lines.{p_end}
-
-{p2coldent : {opt xlabs:ize(value)}, {opt ylabsize(value)}}The size of the x and y-axis labels. Defaults are {it:2} and {it:1.4} respectively.{p_end}
-
-{p2coldent : {opt xlabc:olor(string)}, {opt ylabc:olor(string)}}This option can be used for customizing the x and y-axis label colors especially if non-standard graph schemes are used. Defaults are {it:black}.{p_end}
+{p2coldent : {opt xtitle, ytitle, xsize, ysize}}These are standard twoway graph options.{p_end}
 
 {p2coldent : {opt title, subtitle, note}}These are standard twoway graph options.{p_end}
 
@@ -68,10 +63,12 @@ The {browse "http://repec.sowi.unibe.ch/stata/palettes/index.html":palette} pack
 {stata ssc install palettes, replace}
 {stata ssc install colrspace, replace}
 
+Even if you have these installed, it is highly recommended to check for updates: {stata ado update, update}
 
 {title:Examples}
 
-Load the data and clean it up:
+{ul:{it:Set up the data}}
+
 use "https://github.com/asjadnaqvi/The-Stata-Guide/blob/master/data/OWID_data.dta?raw=true", clear
 
 gen region = .
@@ -98,52 +95,43 @@ lab val region region
 
 keep date new_cases country region
 
-- Basic use:
+{ul:{it:Basic use}}
 
-streamplot new_cases date, by(region)
+- {stata streamplot new_cases date, by(region)}
 
-streamplot new_cases date if date > 22400, by(region) palette(twilight) 
+- {stata streamplot new_cases date if date > 22400, by(region) smooth(6)}
 
-streamplot new_cases date, by(region) xlinew(medium)
-
-streamplot new_cases date, by(region) xlinec(none)
-
-- With additional options:
-
-{it:Condition labels}
-
-streamplot new_cases date if date > 22400, by(region) smooth(5) ///
+- streamplot new_cases date if date > 22400, by(region) smooth(6) ///
 	title("My stream plot") note("test the note") ///
-	labcond(> 100000) ylabsize(1.8) lc(black) lw(0.08)
+	labcond(> 100000) ylabsize(1.8) lc(black) lw(0.04)
 
+- qui summ date if date > 22400
+	local xmin = `r(min)'
+	local xmax = `r(max)'
 
-{it:Condition x-axis}
-
-qui summ date if date > 22400
-
-local xmin = r(min)
-local xmax = r(max) + 40
-
-streamplot new_cases date if date > 22400, by(region) smooth(3) ///
+  streamplot new_cases date if date > 22400, by(region) smooth(6) ///
 	title("My stream plot") subtitle("Subtitle here") note("Note here") ///
-	labcond(> 100000) ylabsize(1.5) xlabc(blue) ylabc(orange) lc(white) lw(0.08) ///
-	xticks(`xmin'(20)`xmax')
+	labcond(> 100000) ylabsize(1.5) lc(white) lw(0.08) ///
+	xlabel(`xmin'(20)`xmax', angle(90)) xtitle("")
 
-{it:Custom graph scheme}
+Here we use the custom scheme {it:neon} from {stata help schemepack:schemepack} ({stata ssc install schemepack, replace:{it:install}}):
 
-The example below uses the {stata ssc install schemepack, replace:schemepack} suite and loads the {stata set scheme neon:neon} which has a black background. Here we need to fix some colors:
-
-streamplot new_cases date if date > 22400, by(region) ///
-	title("My stream plot", size(6)) subtitle("Subtitle here", size(4)) note("Note here") ///
-	labcond(> 100000) ylabs(2.1) lc(black) lw(0.02) ///
-	scheme(neon) xlinec(gs4) 
+- streamplot new_cases date if date > 22400, by(region) smooth(6) ///
+	title("My stream plot", size(6)) subtitle("Subtitle here", size(4))  ///
+	labcond(> 100000) ylabs(2) lc(black) lw(0.02) offset(0.3) xtitle("") ///
+	scheme(neon) 
 
 {hline}
 
+{title:Acknowledgements}
+
+Marc Kaulisch found an error in the smoothing parameter.
+
+
 {title:Package details}
 
-Version      : {bf:streamplot} v1.1
-This release : 08 Apr 2022
+Version      : {bf:streamplot} v1.2
+This release : 06 Jun 2022
 First release: 06 Aug 2021
 Repository   : {browse "https://github.com/asjadnaqvi/streamplot":GitHub}
 Keywords     : Stata, graph, stream plot
