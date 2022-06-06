@@ -54,9 +54,9 @@ The syntax is as follows:
 
 ```
 streamplot y x [if] [in], by(varname) [ palette(str) smooth(num) labcond(str)
-                        lcolor(str) lwidth(str) xlabel(str)
-						ylabsize(num)  ylabcolor(str) offset(num)
-                        title(str) subtitle(str) note(str) xsize(num) ysize(num) scheme(str) ]
+				lcolor(str) lwidth(str) xlabel(str)
+				ylabsize(num)  ylabcolor(str) offset(num)
+				title(str) subtitle(str) note(str) xsize(num) ysize(num) scheme(str) ]
 ```
 
 See the help file `help streamplot` for details.
