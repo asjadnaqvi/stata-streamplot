@@ -53,9 +53,9 @@ graph set window fontface "Arial Narrow"
 The syntax is as follows:
 
 ```
-streamplot y x [if] [in], by(varname) [ palette(str) smooth(num) labcond(str) 
+streamplot y x [if] [in], by(varname) [ palette(str) smooth(num) labcond(str)
                         lcolor(str) lwidth(str) xlabel(str)
-						ylabsize(num)  ylabcolor(str) offset(num) 
+						ylabsize(num)  ylabcolor(str) offset(num)
                         title(str) subtitle(str) note(str) xsize(num) ysize(num) scheme(str) ]
 ```
 
@@ -154,7 +154,7 @@ or a custom graph scheme:
 streamplot new_cases date if date > 22400, by(region) smooth(6) ///
 	title("My stream plot", size(6)) subtitle("Subtitle here", size(4))  ///
 	labcond(> 100000) ylabs(2) lc(black) lw(0.02) offset(0.3) xtitle("") ///
-	scheme(neon) 
+	scheme(neon)
 ```
 
 where the dark background `neon` scheme is loaded from the [schemepack](https://github.com/asjadnaqvi/Stata-schemes) suite.
@@ -164,7 +164,7 @@ where the dark background `neon` scheme is loaded from the [schemepack](https://
 
 ## Feedback
 
-Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to report errors, feature enhancements, and/or other requests. 
+Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to report errors, feature enhancements, and/or other requests.
 
 
 ## Versions
@@ -179,8 +179,3 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to
 
 **v1.0 (06 Aug 2021)**
 - Beta version
-
-
-
-
-
