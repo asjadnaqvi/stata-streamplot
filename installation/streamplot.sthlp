@@ -1,5 +1,5 @@
 {smcl}
-{* 06June2022}{...}
+{* 14June2022}{...}
 {hi:help streamplot}{...}
 {right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.2 (GitHub)}}
 
@@ -131,7 +131,7 @@ Marc Kaulisch found an error in the smoothing parameter.
 {title:Package details}
 
 Version      : {bf:streamplot} v1.2
-This release : 06 Jun 2022
+This release : 14 Jun 2022
 First release: 06 Aug 2021
 Repository   : {browse "https://github.com/asjadnaqvi/streamplot":GitHub}
 Keywords     : Stata, graph, stream plot

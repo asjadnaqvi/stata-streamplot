@@ -1,8 +1,9 @@
-*! streamplot v1.2: passthru optimizations. error checks. reduce the default smoothing. 
+*! streamplot v1.2 (14 Jun 2022)  
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
-*! 06 Jun 2022: passthru options added. bug fixes
-* v1.1 08.Apr.2022
-* v1.0 06.Aug.2021
+
+* v1.2 06 Jun 2022: passthru optimizations. error checks. reduce the default smoothing. labels fix
+* v1.1 08 Apr 2022
+* v1.0 06 Aug 2021
 
 **********************************
 * Step-by-step guide on Medium   *
@@ -27,7 +28,6 @@ version 15
 		[ xlabel(passthru) xtitle(passthru) title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)  ] ///
 		[  allopt graphopts(string asis) * ] 
 		
-		// xtitle(string) ytitle(string) removed for now.
 		
 		
 	// check dependencies
@@ -36,9 +36,6 @@ version 15
 		display as error "colorpalette package is missing. Install the {stata ssc install colorpalette, replace:colorpalette} and {stata ssc install colrspace, replace:colrspace} packages."
 		exit
 	}	
-	
-	
-	
 	
 	marksample touse, strok
 	gettoken yvar xvar : varlist 	
@@ -52,11 +49,16 @@ preserve
 			exit
 		}
 		
-		collapse (sum) `yvar' if `touse', by(`xvar' `by')
+		
+		
+	// prepare the dataset	
+	collapse (sum) `yvar' if `touse', by(`xvar' `by')
 
-		xtset `by' `xvar' 
+	xtset `by' `xvar' 
 			
-	// this is technically wrong but we do it anyways
+	// this is technically wrong but we do it anyways  
+	// fix in later versions
+	
 	replace `yvar' = 0 if `yvar' < 0	
 	
 	tempvar `yvar'_ma7	
@@ -67,9 +69,6 @@ preserve
 		local xrmin = r(min)
 		local xrmax = r(max) + ((r(max) - r(min)) * `offset') 
 	
-		// noi di "`xrmin' - `xrmax'"
-	
-
 	cap drop stack_`yvar'
 	
 	gen  stack_`yvar'	= .
@@ -86,25 +85,23 @@ preserve
 		}	
 
 
-	sort `by' `xvar'  	
-		
-
-		
-keep `by' `xvar' `yvar' stack_`yvar'
+	sort `by' `xvar'  		
+	keep `by' `xvar' `yvar' stack_`yvar'
   
-*ren stack_`yvar' cases
-
-
+	
 
 ** preserve the labels
 
+	local mylab: value label `by'
 
-levelsof `by', local(idlabels)      // store the id levels
-	
-foreach x of local idlabels {       
-   	local idlab_`x' : label `by' `x'  // store the corresponding value label in a macro
-	
-	}
+
+	levelsof `by', local(idlabels)      // store the id levels
+		
+	foreach x of local idlabels {       
+		local idlab_`x' : label `mylab' `x'  // store the corresponding value label in a macro
+		
+		}
+
 
 
 reshape wide stack_`yvar' `yvar' , i(`xvar') j(`by') 
@@ -132,9 +129,8 @@ foreach x of varlist stack_`yvar'* {
 	gen `x'_norm  = `x' - meanval_`yvar'
 }	
 	
-
-
 drop meanval*
+
 
 // this part is for the mid points 		
 
@@ -145,15 +141,17 @@ gen last = 1 if `xvar'==r(max)
 ds stack_`yvar'*norm
 local items : word count `r(varlist)'
 local items = `items' - 2
-display `items'
+
+
 
 forval i = 0/`items' {
-local i0 = `i'
-local i1 = `i' + 1
+	local i0 = `i'
+	local i1 = `i' + 1
 
-gen y`yvar'`i1'  = (stack_`yvar'`i0'_norm + stack_`yvar'`i1'_norm) / 2 if last==1
-
+	gen y`yvar'`i1'  = (stack_`yvar'`i0'_norm + stack_`yvar'`i1'_norm) / 2 if last==1
 }
+
+
 
 egen lastsum_`yvar'  = rowtotal(`yvar'*)  if last==1
 
@@ -184,6 +182,7 @@ drop lastsum*
 
 		local t : var lab `yvar'`x'
 		gen label`x'_`yvar'  = "`t'" + " (" + string( `yvar'`x', "%12.0f") + ")"	if last==1  `condition'
+		
 	}
 
 
@@ -217,36 +216,6 @@ drop lastsum*
 		local linew `lwidth'
 	}
 	
-	
-
-	/*   // removed for now
-	if "`xlinepattern'" != "" {
-		local xp solid
-	}
-	else {
-		local xp `xlinepattern'
-	}
-	*/
-	
-	if "`xlinecolor'" == "" {
-		local xc gs13
-	}
-	else {
-		local xc `xlinecolor'
-	}	
-	
-	
-	if "`xlinewidth'" == "" {
-		local xw vthin
-	}
-	else {
-		local xw `xlinewidth'
-	}		
-	
-	
-
-	
-	
 
 summ stack_`yvar'0_norm	
 local ymin = -1 * abs(r(min)) * 1.05
@@ -259,8 +228,7 @@ local items = `items' - 2
 display `items'
 
 	
-forval x = 0/`items' {  // total observations - 1
-*display "`x'"
+forval x = 0/`items' {  
 
 local numcolor = `items' + 1
 
@@ -281,13 +249,13 @@ colorpalette `mycolor', n(`numcolor') nograph
 	twoway /// 
 		`areagraph' ///
 		`labels'	///
-	, ///
-		legend(off) ///
-		yscale(noline) xscale(noline) ///
-		ytitle("") `xtitle'  ///
-		ylabel(`ymin' `ymax', nolabels noticks nogrid) ///
-		`xlabel' xscale(range(`xrmin' `xrmax'))   ///  
-		`title' `subtitle' `note' `scheme' `xsize' `ysize'
+			, ///
+				legend(off) ///
+				yscale(noline) xscale(noline) ///
+				ytitle("") `xtitle'  ///
+				ylabel(`ymin' `ymax', nolabels noticks nogrid) ///
+				`xlabel' xscale(range(`xrmin' `xrmax'))   ///  
+				`title' `subtitle' `note' `scheme' `xsize' `ysize'
 
 restore
 }		
