@@ -125,7 +125,7 @@ Here we use the custom scheme {it:neon} from {stata help schemepack:schemepack} 
 
 {title:Acknowledgements}
 
-Marc Kaulisch found an error in the smoothing parameter.
+Marc Kaulisch found an error in the smoothing parameter and value labels.
 
 
 {title:Package details}

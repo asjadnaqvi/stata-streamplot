@@ -170,6 +170,7 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to
 ## Versions
 
 **v1.2 (06 Jun 2022)**
+- Fixes to value labels no passing through to graphs (Thanks to Marc Kaulisch)
 - Several graph options modified to passthru for better integration with twoway options.
 - Smoothing parameter adjusted
 - Error checks added. If there are too few observations per group, the command will abort.
