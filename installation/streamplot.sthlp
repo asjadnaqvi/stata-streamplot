@@ -1,7 +1,7 @@
 {smcl}
-{* 14June2022}{...}
+{* 20June2022}{...}
 {hi:help streamplot}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.2 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.3 (GitHub)}}
 
 {hline}
 
@@ -14,9 +14,10 @@ The command is based on the following guide on Medium: {browse "https://medium.c
 {marker syntax}{title:Syntax}
 {p 8 15 2}
 
-{cmd:streamplot} {it:y x} {ifin}, {cmd:by}(varname) {cmd:[} {cmd:palette}({it:str}) {cmd:smooth}({it:num}) {cmd:labcond}({it:str}) 
-			{cmdab:lc:olor}({it:str}) {cmdab:lw:idth}({it:str}) {cmdab:ylabs:ize}({it:num}) {cmdab:ylabc:olor}({it:str}) {cmd:offset}({it:num}) {cmd:xlabel}({it:str})
-			{cmd:xtitle}({it:str}) {cmd:ytitle}({it:str}) {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:note}({it:str}) {cmd:xsize}({it:num}) {cmd:ysize}({it:num}) {cmd:scheme}({it:str}) {cmd:]}
+{cmd:streamplot} {it:y x} {ifin}, {cmd:by}(varname) {cmd:[} {cmd:palette}({it:str}) {cmd:smooth}({it:num}) {cmd:labcond}({it:str}) {cmd:offset}({it:num}) 
+			{cmdab:lc:olor}({it:str}) {cmdab:lw:idth}({it:str}) {cmdab:ylabs:ize}({it:num}) {cmdab:ylabc:olor}({it:str}) {cmd:percent} {cmd:format}({it:str})
+			{cmd:xlabel}({it:str}) {cmd:xtitle}({it:str}) {cmd:ytitle}({it:str}) {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:note}({it:str}) 
+			{cmd:ysize}({it:num}) {cmd:xsize}({it:num}) {cmd:scheme}({it:str}) {cmd:]}
 
 
 {p 4 4 2}
@@ -34,7 +35,11 @@ The options are described as follows:
 
 {p2coldent : {opt smooth(value)}}The data is smoothed based on a number of past observations. The default value is {it:2}. A value of 0 implies no smoothing.{p_end}
 
-{p2coldent : {opt offset(value)}}Extends the x-axis range to accommodate labels. The default value is {it:0.12} or 12% of {it:xmax-xmin}. {p_end}
+{p2coldent : {opt offset(value)}}Extends the x-axis range to accommodate labels. The default value is {it:0.12} or 12% of {it:xmax-xmin}.{p_end}
+
+{p2coldent : {opt percent}}Shows the percentage share for the y-axis categories.{p_end}
+
+{p2coldent : {opt format()}}Format the values of the y-axis category.{p_end}
 
 {p2coldent : {opt xlabel()}}This is the standard twoway graph option for labeling and formatting the x-axis. {p_end}
 
@@ -125,13 +130,13 @@ Here we use the custom scheme {it:neon} from {stata help schemepack:schemepack} 
 
 {title:Acknowledgements}
 
-Marc Kaulisch found an error in the smoothing parameter and value labels.
+Marc Kaulisch found an error in the smoothing parameter and value labels. Marc also suggested several enhancements and contributed to the package.
 
 
 {title:Package details}
 
-Version      : {bf:streamplot} v1.2
-This release : 14 Jun 2022
+Version      : {bf:streamplot} v1.3
+This release : 20 Jun 2022
 First release: 06 Aug 2021
 Repository   : {browse "https://github.com/asjadnaqvi/streamplot":GitHub}
 Keywords     : Stata, graph, stream plot

@@ -1,7 +1,7 @@
-*! streamplot v1.2 (14 Jun 2022)  
+*! streamplot v1.3 (20 Jun 2022). Add marker labels and format options 
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
-* v1.2 06 Jun 2022: passthru optimizations. error checks. reduce the default smoothing. labels fix
+* v1.2 14 Jun 2022: passthru optimizations. error checks. reduce the default smoothing. labels fix
 * v1.1 08 Apr 2022
 * v1.0 06 Aug 2021
 
@@ -165,7 +165,7 @@ egen lastsum_`yvar'  = rowtotal(`yvar'*)  if last==1
 
 
 foreach x of varlist `yvar'* {
-	gen `x'_share = (`x' / lastsum_`yvar') * 100
+	gen double `x'_share = (`x' / lastsum_`yvar') * 100
 	}
 
 
@@ -187,7 +187,7 @@ drop lastsum*
 				local condition 
 			}
 		
-		   * Addition of percent and format
+		   * Addition of percent and format (Marc Kaulisch)
 		   if `"`percent'"'!="" {
 			local ylabvalues `"string(`yvar'`x'_share, `"`format'"') + "%""'
 		   }
@@ -202,13 +202,14 @@ drop lastsum*
 
 
 
-	
+	/*
 	if "`ylabcolor'" == "" {
 		local ycolor  black
 	}
 	else {
 		local ycolor `ylabcolor'
-	}	
+	}
+	*/
 	
 	if "`palette'" == "" {
 		local mycolor "CET C6"
@@ -258,7 +259,7 @@ colorpalette `mycolor', n(`numcolor') nograph
 
 	local areagraph `areagraph' rarea stack_`yvar'`x0'_norm stack_`yvar'`x1'_norm `xvar', fcolor("`r(p`x1')'") fi(100) lcolor(`linec') lwidth(`linew') ||
 	
-	local labels    `labels'  (scatter y`yvar'`x1' `xvar' if last==1, mlabel(label`x1'_`yvar') mcolor(none) mlabsize(`ylabsize') mlabcolor(`ycolor')) || 			
+	local labels    `labels'  (scatter y`yvar'`x1' `xvar' if last==1, mlabel(label`x1'_`yvar') mcolor(none) mlabsize(`ylabsize') mlabcolor(`ylabcolor')) || 			
 		
 
 	}

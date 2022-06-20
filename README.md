@@ -1,6 +1,6 @@
 ![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-streamplot) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-streamplot) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-streamplot) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-streamplot) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-streamplot)
 
-# streamplot v1.2
+# streamplot v1.3
 
 This package provides the ability to generate stream plots in Stata. It is based on the [Streamplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-10-stream-graphs-9d55db12318a) that I released in December 2020.
 
@@ -9,12 +9,12 @@ This package provides the ability to generate stream plots in Stata. It is based
 
 The package can be installed via SSC or GitHub. The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers below. Eventually the GitHub version is published on SSC.
 
-SSC (**v1.1**):
+SSC (**v1.2**):
 ```
 ssc install streamplot, replace
 ```
 
-GitHub (**v1.2**):
+GitHub (**v1.3**):
 
 ```
 net install streamplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-streamplot/main/installation/") replace
@@ -50,7 +50,7 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax is as follows:
+The syntax for **v1.3** is as follows:
 
 ```
 streamplot y x [if] [in], by(varname) [ palette(str) smooth(num) labcond(str)
@@ -81,6 +81,7 @@ set scheme white_tableau
 graph set window fontface "Arial Narrow"
 
 use "https://github.com/asjadnaqvi/The-Stata-Guide/blob/master/data/OWID_data.dta?raw=true", clear
+drop if date > 22736
 
 gen region = .
         replace region = 1 if group29==1 & country=="United States" // North America
@@ -104,8 +105,8 @@ lab de region  1 "United States" 2 "Rest of North America" 3 "Brazil" 4 "Rest of
 
 lab val region region
 
-
 keep date new_cases country region
+
 ```
 
 
@@ -126,10 +127,29 @@ streamplot new_cases date if date > 22400, by(region) smooth(6)
 ```
 streamplot new_cases date if date > 22400, by(region) smooth(6) ///
 	title("My stream plot") note("test the note") ///
-	labcond(> 100000) ylabsize(1.8) lc(black) lw(0.04)
+	labcond(> 20000) ylabsize(1.8) lc(black) lw(0.04)
 ```
 
 <img src="/figures/streamplot3.png" height="600">
+
+
+```
+streamplot new_cases date if date > 22400, by(region) smooth(6) ///
+	title("My stream plot") ///
+	labcond(> 20000) ylabsize(1.8) lc(black) lw(0.04) format(%12.0fc) offset(0.2)
+```
+
+<img src="/figures/streamplot3_1.png" height="600">
+
+
+```
+streamplot new_cases date if date > 22400, by(region) smooth(6) ///
+	title("My stream plot") ///
+	labcond(> 20000) ylabsize(1.8) lc(black) lw(0.04)  percent format(%3.2f) offset(0.2) ylabc(blue)
+```
+
+<img src="/figures/streamplot3_2.png" height="600">
+
 
 ```
 qui summ date if date > 22400
@@ -139,7 +159,7 @@ local xmax = `r(max)'
 
 streamplot new_cases date if date > 22400, by(region) smooth(6) ///
 	title("My stream plot") subtitle("Subtitle here") note("Note here") ///
-	labcond(> 100000) ylabsize(1.5) lc(white) lw(0.08) ///
+	labcond(> 20000) ylabsize(1.5) lc(white) lw(0.08) ///
 	xlabel(`xmin'(20)`xmax', angle(90)) xtitle("")
 ```
 
@@ -153,8 +173,8 @@ or a custom graph scheme:
 ```
 streamplot new_cases date if date > 22400, by(region) smooth(6) ///
 	title("My stream plot", size(6)) subtitle("Subtitle here", size(4))  ///
-	labcond(> 100000) ylabs(2) lc(black) lw(0.02) offset(0.3) xtitle("") ///
-	scheme(neon)
+	labcond(> 20000) ylabs(2) lc(black) lw(0.02) offset(0.3) xtitle("") ///
+	scheme(neon) 
 ```
 
 where the dark background `neon` scheme is loaded from the [schemepack](https://github.com/asjadnaqvi/Stata-schemes) suite.
@@ -168,6 +188,12 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to
 
 
 ## Versions
+
+**v1.3 (20 Jun 2022)**
+- ado distribution date added.
+- ylabel color, format, and percentages added (Thanks to Marc Kaulisch who suggested and contributed to these options).
+- Fixes to variables precisions.
+- y-label color fixed.
 
 **v1.2 (06 Jun 2022)**
 - Fixes to value labels no passing through to graphs (Thanks to Marc Kaulisch)
