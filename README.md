@@ -191,12 +191,12 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to
 
 **v1.3 (20 Jun 2022)**
 - ado distribution date added.
-- ylabel color, format, and percentages added (Thanks to Marc Kaulisch who suggested and contributed to these options).
+- ylabel color, format, and percentages added (Thanks to @mkaulisch who suggested and contributed to these options).
 - Fixes to variables precisions.
 - y-label color fixed.
 
 **v1.2 (06 Jun 2022)**
-- Fixes to value labels no passing through to graphs (Thanks to Marc Kaulisch)
+- Fixes to value labels no passing through to graphs (Thanks to @mkaulisch)
 - Several graph options modified to passthru for better integration with twoway options.
 - Smoothing parameter adjusted
 - Error checks added. If there are too few observations per group, the command will abort.
