@@ -145,10 +145,18 @@ streamplot new_cases date if date > 22400, by(region) smooth(6) ///
 ```
 streamplot new_cases date if date > 22400, by(region) smooth(6) ///
 	title("My stream plot") ///
-	labcond(> 20000) ylabsize(1.8) lc(black) lw(0.04)  percent format(%3.2f) offset(0.2) ylabc(blue)
+	labcond(> 20000) ylabsize(1.8) lc(black) lw(0.04)  percent format(%3.2f) offset(0.2) ylabc(red)
 ```
 
 <img src="/figures/streamplot3_2.png" height="600">
+
+```
+streamplot new_cases date if date > 22400, by(region) smooth(6) ///
+	title("My stream plot") ///
+	labcond(> 20000) ylabsize(1.8) lc(black) lw(0.04)  percent format(%3.2f) offset(0.2) ylabc(palette)
+```
+
+<img src="/figures/streamplot3_3.png" height="600">
 
 
 ```
@@ -193,7 +201,7 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to
 - ado distribution date added.
 - ylabel color, format, and percentages added (Thanks to Marc Kaulisch who suggested and contributed to these options).
 - Fixes to variables precisions.
-- y-label color fixed.
+- y-label color fixed. Labels can either take on a named color, or they can be assigned the same colors as the color palette.
 
 **v1.2 (06 Jun 2022)**
 - Fixes to value labels no passing through to graphs (Thanks to Marc Kaulisch).

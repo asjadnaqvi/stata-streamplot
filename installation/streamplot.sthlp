@@ -15,7 +15,7 @@ The command is based on the following guide on Medium: {browse "https://medium.c
 {p 8 15 2}
 
 {cmd:streamplot} {it:y x} {ifin}, {cmd:by}(varname) {cmd:[} {cmd:palette}({it:str}) {cmd:smooth}({it:num}) {cmd:labcond}({it:str}) {cmd:offset}({it:num}) 
-			{cmdab:lc:olor}({it:str}) {cmdab:lw:idth}({it:str}) {cmdab:ylabs:ize}({it:num}) {cmdab:ylabc:olor}({it:str}) {cmd:percent} {cmd:format}({it:str})
+			{cmdab:lc:olor}({it:str}) {cmdab:lw:idth}({it:str}) {cmdab:ylabs:ize}({it:num}) {cmdab:ylabc:olor}({it:color}|{it:palette}) {cmd:percent} {cmd:format}({it:str})
 			{cmd:xlabel}({it:str}) {cmd:xtitle}({it:str}) {cmd:ytitle}({it:str}) {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:note}({it:str}) 
 			{cmd:ysize}({it:num}) {cmd:xsize}({it:num}) {cmd:scheme}({it:str}) {cmd:]}
 
@@ -36,6 +36,8 @@ The options are described as follows:
 {p2coldent : {opt smooth(value)}}The data is smoothed based on a number of past observations. The default value is {it:2}. A value of 0 implies no smoothing.{p_end}
 
 {p2coldent : {opt offset(value)}}Extends the x-axis range to accommodate labels. The default value is {it:0.12} or 12% of {it:xmax-xmin}.{p_end}
+
+{p2coldent : {opt ylabc:olor(string)}}Either takes on a named Stata color, e.g. {it:ylabc(red)} for red labels. If {it:ylabc(palette)} is specified, labels are colored based on the color palette.{p_end}
 
 {p2coldent : {opt percent}}Shows the percentage share for the y-axis categories.{p_end}
 

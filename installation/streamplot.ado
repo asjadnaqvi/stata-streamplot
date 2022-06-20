@@ -202,14 +202,12 @@ drop lastsum*
 
 
 
-	/*
-	if "`ylabcolor'" == "" {
-		local ycolor  black
+	
+	if "`ylabcolor'" != "palette" {
+		local ycolor  `ylabcolor'
 	}
-	else {
-		local ycolor `ylabcolor'
-	}
-	*/
+	
+	
 	
 	if "`palette'" == "" {
 		local mycolor "CET C6"
@@ -253,13 +251,14 @@ colorpalette `mycolor', n(`numcolor') nograph
 	local x0 =  `x'
 	local x1 =  `x' + 1
 
+	local areagraph `areagraph' rarea stack_`yvar'`x0'_norm stack_`yvar'`x1'_norm `xvar', fcolor("`r(p`x1')'") fi(100) lcolor(`linec') lwidth(`linew') ||
+
+	
 	if "`ylabcolor'" == "palette" {
 		local ycolor  "`r(p`x1')'"
-	}
-
-	local areagraph `areagraph' rarea stack_`yvar'`x0'_norm stack_`yvar'`x1'_norm `xvar', fcolor("`r(p`x1')'") fi(100) lcolor(`linec') lwidth(`linew') ||
+	}	
 	
-	local labels    `labels'  (scatter y`yvar'`x1' `xvar' if last==1, mlabel(label`x1'_`yvar') mcolor(none) mlabsize(`ylabsize') mlabcolor(`ylabcolor')) || 			
+	local labels    `labels'  (scatter y`yvar'`x1' `xvar' if last==1, mlabel(label`x1'_`yvar') mcolor(none) mlabsize(`ylabsize') mlabcolor("`ycolor'")) || 			
 		
 
 	}
