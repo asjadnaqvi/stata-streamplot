@@ -26,7 +26,7 @@ version 15
 		[ LColor(string)  LWidth(string) labcond(string) ] 		///					
 		[ YLABSize(real 1.4) YLABel(varname)  YLABColor(string) offset(real 0.12)    ] ///
 		[ xlabel(passthru) xtitle(passthru) title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)  ] ///
-		[  allopt graphopts(string asis) PERCENT * ] 
+		[  allopt graphopts(string asis) PERCENT FORMAT(string) * ] 
 		
 		
 		
@@ -39,7 +39,14 @@ version 15
 	
 	marksample touse, strok
 	gettoken yvar xvar : varlist 	
-	
+
+
+* Definition  of locals - Default format
+if `"`format'"' == "" {
+local format "%12.0f"	
+}
+
+
 qui {
 preserve	
 		
@@ -49,7 +56,8 @@ preserve
 			exit
 		}
 		
-		
+
+
 		
 	// prepare the dataset	
 	collapse (sum) `yvar' if `touse', by(`xvar' `by')
@@ -179,12 +187,12 @@ drop lastsum*
 				local condition 
 			}
 		
-	* Add percent-option
+		   * Addition of percent and format
 		   if `"`percent'"'!="" {
-			local ylabvalues `"string(`yvar'`x'_share, , "%12.0f") + "%""'
+			local ylabvalues `"string(`yvar'`x'_share, `"`format'"') + "%""'
 		   }
 		   else {
-			local ylabvalues `"string(`yvar'`x', , "%12.0f")"'
+			local ylabvalues `"string(`yvar'`x', `"`format'"')"'
 		   }
 
 		local t : var lab `yvar'`x'
