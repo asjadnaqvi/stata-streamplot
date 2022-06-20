@@ -26,7 +26,7 @@ version 15
 		[ LColor(string)  LWidth(string) labcond(string) ] 		///					
 		[ YLABSize(real 1.4) YLABel(varname)  YLABColor(string) offset(real 0.12)    ] ///
 		[ xlabel(passthru) xtitle(passthru) title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)  ] ///
-		[  allopt graphopts(string asis) * ] 
+		[  allopt graphopts(string asis) PERCENT * ] 
 		
 		
 		
@@ -179,10 +179,17 @@ drop lastsum*
 				local condition 
 			}
 		
+	* Add percent-option
+		   if `"`percent'"'!="" {
+			local ylabvalues `"string(`yvar'`x'_share, , "%12.0f") + "%""'
+		   }
+		   else {
+			local ylabvalues `"string(`yvar'`x', , "%12.0f")"'
+		   }
 
 		local t : var lab `yvar'`x'
-		gen label`x'_`yvar'  = "`t'" + " (" + string( `yvar'`x', "%12.0f") + ")"	if last==1  `condition'
-		
+		gen label`x'_`yvar'  = "`t'" + " (" + `ylabvalues' + ")"	if last==1  `condition' // 
+
 	}
 
 
