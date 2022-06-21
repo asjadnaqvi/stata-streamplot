@@ -273,7 +273,8 @@ colorpalette `mycolor', n(`numcolor') nograph
 				ytitle("") `xtitle'  ///
 				ylabel(`ymin' `ymax', nolabels noticks nogrid) ///
 				`xlabel' xscale(range(`xrmin' `xrmax'))   ///  
-				`title' `subtitle' `note' `scheme' `xsize' `ysize'
+				`title' `subtitle' `note' `scheme' `xsize' `ysize' ///
+				`name'
 
 restore
 }		
