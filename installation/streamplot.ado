@@ -1,6 +1,8 @@
-*! streamplot v1.3 (20 Jun 2022). Add marker labels and format options 
+*! streamplot v1.4 (08 Nov 2022)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+* v1.4 (08 Nov 2022): Major code cleanup and some parts reworked. Observation checks. Palette options. label controls.
+* v1.3 (20 Jun 2022). Add marker labels and format options 
 * v1.2 14 Jun 2022: passthru optimizations. error checks. reduce the default smoothing. labels fix
 * v1.1 08 Apr 2022
 * v1.0 06 Aug 2021
@@ -22,11 +24,11 @@ program streamplot, sortpreserve
 
 version 15
  
-	syntax varlist(min=2 max=2 numeric) [if] [in], by(varname) [palette(string) alpha(real 80) smooth(real 3)] ///
+	syntax varlist(min=2 max=2 numeric) [if] [in], by(varname) [palette(string) alpha(real 100) smooth(real 3)] ///
 		[ LColor(string)  LWidth(string) labcond(string) ] 		///					
-		[ YLABSize(real 1.4) YLABel(varname)  YLABColor(string) offset(real 0.12)    ] ///
+		[ YLABSize(string) YLABel(varname)  YLABColor(string) offset(real 0.12) droplow   ] ///
 		[ xlabel(passthru) xtitle(passthru) title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)  ] ///
-		[  allopt graphopts(string asis) PERCENT FORMAT(string) * ] 
+		[  PERCENT FORMAT(string)  ] 
 		
 		
 		
@@ -35,28 +37,101 @@ version 15
 	if _rc != 0 {
 		display as error "colorpalette package is missing. Install the {stata ssc install colorpalette, replace:colorpalette} and {stata ssc install colrspace, replace:colrspace} packages."
 		exit
-	}	
+	}
+	
+	capture findfile labmask.ado
+	if _rc != 0 {
+		qui ssc install labutil, replace
+		exit
+	}
 	
 	marksample touse, strok
 	gettoken yvar xvar : varlist 	
 
 
-* Definition  of locals - Default format
-if `"`format'"' == "" {
-local format "%12.0f"	
-}
+	* Definition  of locals - Default format
+	if `"`format'"' == "" local format "%12.0f"
+	
 
 
 qui {
 preserve	
-		
-		levelsof `xvar'
-		if `r(r)' < 5 {
-			di as err "The variable{it:`xvar'} has less than 5 obvervations per group. Please choose a dataset with a longer time series."
+	
+	keep if `touse'
+	
+	gen ones = 1
+	bysort `by': egen counts = sum(ones)
+	egen tag = tag(`by')
+	summ counts, meanonly
+	 
+	if r(min) < 10 {
+		if "`droplow'" == "" {	
+			count if counts < 10 & tag==1
+			di as error "Groups with errors:"
+			noi list `by' if counts < 10 & tag==1
+			di as error "`r(N)' group(s) (`by') have fewer than 10 observations which is insufficient to use {stata help streamplot:streamplot}."
 			exit
+		}	
+		else {
+			drop if counts < 10
 		}
+	}
+	
+	count
+	if r(N) == 0 {
+		di as error "No groups fulfill the criteria for {stata help streamplot:streamplot}."
+		exit
+	}
+	
+	drop ones tag counts
+	
+	sort `by' `xvar' 
+	cap drop _fillin
+	fillin `by' `xvar' 
+	cap drop _fillin
+	
+	
+	cap confirm numeric var `by'
+		if _rc!=0 {
+			tempvar over2
+			encode `by', gen(`over2')
+			local by `over2' 
+		}
+		else {
+			tempvar tempov over2
+			egen   `over2' = group(`by')
+			
+			if "`: value label `by''" != "" {
+				decode `by', gen(`tempov')		
+				labmask `over2', val(`tempov')
+			}
+			local by `over2' 
+		}
+	
 		
-
+	if "`yreverse'" != "" {
+					
+		clonevar over2 = `by'
+		
+		summ `by', meanonly
+		replace `by' = r(max) - `over' + 1
+		
+		if "`: value label over2'" != "" {
+			tempvar group2
+			decode over2, gen(`group2')			
+			replace `group2' = string(over2) if `group2'==""
+			labmask `by', val(`group2')
+		}
+		else {
+			labmask `by', val(over2)
+		}
+	}		
+	
+	
+	
+	
+	
+	
 
 		
 	// prepare the dataset	
@@ -200,35 +275,20 @@ drop lastsum*
 
 	}
 
-
-
 	
-	if "`ylabcolor'" != "palette" {
-		local ycolor  `ylabcolor'
-	}
-	
-	
-	
+	if "`ylabsize'" == "" local ylabsize "1.4"
+	if "`lcolor'"   == "" local lcolor white
+	if "`lwidth'"   == "" local lwidth  0.05
+	if "`ylabcolor'" != "palette" local ycolor  `ylabcolor'
 	if "`palette'" == "" {
-		local mycolor "CET C6"
+		local palette CET C1	
 	}
 	else {
-		local mycolor `palette'
-	}
+		tokenize "`palette'", p(",")
+		local palette  `1'
+		local poptions `3'
+	}		
 	
-	if "`lcolor'" == "" {
-		local linec white
-	}
-	else {
-		local linec `lcolor'
-	}
-	
-	if "`lwidth'" == "" {
-		local linew  0.02
-	}
-	else {
-		local linew `lwidth'
-	}
 	
 
 summ stack_`yvar'0_norm	
@@ -246,17 +306,17 @@ forval x = 0/`items' {
 
 local numcolor = `items' + 1
 
-colorpalette `mycolor', n(`numcolor') nograph
+colorpalette `palette', n(`numcolor') nograph `poptions'
 
 	local x0 =  `x'
 	local x1 =  `x' + 1
 
-	local areagraph `areagraph' rarea stack_`yvar'`x0'_norm stack_`yvar'`x1'_norm `xvar', fcolor("`r(p`x1')'") fi(100) lcolor(`linec') lwidth(`linew') ||
+	local areagraph `areagraph' rarea stack_`yvar'`x0'_norm stack_`yvar'`x1'_norm `xvar', fcolor("`r(p`x1')'") fi(100) lcolor(`lcolor') lwidth(`lwidth') ||
 
 	
 	if "`ylabcolor'" == "palette" {
 		local ycolor  "`r(p`x1')'"
-	}	
+	}
 	
 	local labels    `labels'  (scatter y`yvar'`x1' `xvar' if last==1, mlabel(label`x1'_`yvar') mcolor(none) mlabsize(`ylabsize') mlabcolor("`ycolor'")) || 			
 		
@@ -269,12 +329,11 @@ colorpalette `mycolor', n(`numcolor') nograph
 		`labels'	///
 			, ///
 				legend(off) ///
-				yscale(noline) xscale(noline) ///
+				yscale(noline) ///
 				ytitle("") `xtitle'  ///
 				ylabel(`ymin' `ymax', nolabels noticks nogrid) ///
-				`xlabel' xscale(range(`xrmin' `xrmax'))   ///  
-				`title' `subtitle' `note' `scheme' `xsize' `ysize' ///
-				`name'
+				`xlabel' xscale(noline range(`xrmin' `xrmax'))   ///  
+				`title' `subtitle' `note' `scheme' `xsize' `ysize' `name'
 
 restore
 }		
