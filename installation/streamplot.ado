@@ -1,6 +1,7 @@
-*! streamplot v1.4 (08 Nov 2022)
+*! streamplot v1.5 (20 Nov 2022)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+* v1.5 (20 Nov 2022): recenter option added. improved variable precision.
 * v1.4 (08 Nov 2022): Major code cleanup and some parts reworked. Observation checks. Palette options. label controls.
 * v1.3 (20 Jun 2022). Add marker labels and format options 
 * v1.2 14 Jun 2022: passthru optimizations. error checks. reduce the default smoothing. labels fix
@@ -28,7 +29,7 @@ version 15
 		[ LColor(string)  LWidth(string) labcond(string) ] 		///					
 		[ YLABSize(string) YLABel(varname)  YLABColor(string) offset(real 0.12) droplow   ] ///
 		[ xlabel(passthru) xtitle(passthru) title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)  ] ///
-		[  PERCENT FORMAT(string)  ] 
+		[ PERCENT FORMAT(string) RECenter(string) ] 
 		
 		
 		
@@ -128,13 +129,6 @@ preserve
 	}		
 	
 	
-	
-	
-	
-	
-
-		
-	// prepare the dataset	
 	collapse (sum) `yvar' if `touse', by(`xvar' `by')
 
 	xtset `by' `xvar' 
@@ -148,22 +142,23 @@ preserve
 	tssmooth ma ``yvar'_ma7'  = `yvar' , w(`smooth' 1 0) 
 
 	// add the range variable on the x-axis
-	summ `xvar' if ``yvar'_ma7' != .
-		local xrmin = r(min)
-		local xrmax = r(max) + ((r(max) - r(min)) * `offset') 
+	summ `xvar' if ``yvar'_ma7' != ., meanonly
 	
-	cap drop stack_`yvar'
+	local xrmin = r(min)
+	local xrmax = r(max) + ((r(max) - r(min)) * `offset') 
 	
-	gen  stack_`yvar'	= .
+	*cap drop stack_`yvar'
+	
+	gen double stack_`yvar'	= .
 	
 	sort `xvar' `by'  
-	qui levelsof `xvar', local(lvls)
+	levelsof `xvar', local(lvls)
 
 	foreach y of local lvls {
 
-		qui summ `by'
-			qui replace stack_`yvar'  = ``yvar'_ma7' 				 			if  `xvar'==`y' & `by'==r(min)
-			qui replace stack_`yvar'  = ``yvar'_ma7'  +  stack_`yvar'[_n-1] 	if  `xvar'==`y' & `by'!=r(min)
+		summ `by', meanonly
+			replace stack_`yvar'  = ``yvar'_ma7' 				 			if  `xvar'==`y' & `by'==r(min)
+			replace stack_`yvar'  = ``yvar'_ma7'  +  stack_`yvar'[_n-1] 	if  `xvar'==`y' & `by'!=r(min)
 			
 		}	
 
@@ -183,56 +178,66 @@ preserve
 	foreach x of local idlabels {       
 		local idlab_`x' : label `mylab' `x'  // store the corresponding value label in a macro
 		
-		}
+	}
 
 
 
-reshape wide stack_`yvar' `yvar' , i(`xvar') j(`by') 
+	reshape wide stack_`yvar' `yvar' , i(`xvar') j(`by') 
 
 
- foreach x of local idlabels {        // here we know how many variables we have    
+	foreach x of local idlabels {        // here we know how many variables we have    
 
- 	lab var stack_`yvar'`x'  "`idlab_`x''" 
-	lab var       `yvar'`x'  "`idlab_`x''"   
-	 }
+		lab var stack_`yvar'`x'  "`idlab_`x''" 
+		lab var       `yvar'`x'  "`idlab_`x''"   
+	}
 
  
 	 
 	gen stack_`yvar'0 = 0  // we need this for area graphs
 
-ds `yvar'*
-local items : word count `r(varlist)'
-local items = `items' - 1
+	ds `yvar'*
+	local items : word count `r(varlist)'
+	local items = `items' - 1
 
-gen meanval_`yvar'  =  stack_`yvar'`items' / 2
-
-
-
-foreach x of varlist stack_`yvar'* {
-	gen `x'_norm  = `x' - meanval_`yvar'
-}	
+	if "`recenter'" == "" | "`recenter'"=="middle"  | "`recenter'"=="mid"  | "`recenter'"=="m" {
+		gen double meanval_`yvar'  =  stack_`yvar'`items' / 2
+	}
 	
-drop meanval*
+	if "`recenter'" == "bottom" | "`recenter'"=="bot" | "`recenter'"=="b" {
+		gen meanval_`yvar'  =  0
+	}	
+	
+	if "`recenter'" == "top" | "`recenter'"=="t"  {
+		local items2 = `items' + 1
+		gen double meanval_`yvar'  =   stack_`yvar'`items2'
+	}		
+	
+
+	foreach x of varlist stack_`yvar'* {
+		gen double `x'_norm  = `x' - meanval_`yvar'
+	}	
+	
+	drop meanval*
 
 
-// this part is for the mid points 		
+	// this part is for the mid points 		
 
-summ `xvar'
-gen last = 1 if `xvar'==r(max)
-
-
-ds stack_`yvar'*norm
-local items : word count `r(varlist)'
-local items = `items' - 2
+	summ `xvar'
+	gen last = 1 if `xvar'==r(max)
 
 
+	ds stack_`yvar'*norm
+	local items : word count `r(varlist)'
+	local items = `items' - 2
 
-forval i = 0/`items' {
-	local i0 = `i'
-	local i1 = `i' + 1
 
-	gen y`yvar'`i1'  = (stack_`yvar'`i0'_norm + stack_`yvar'`i1'_norm) / 2 if last==1
-}
+
+	forval i = 0/`items' {
+		local i0 = `i'
+		local i1 = `i' + 1
+
+		gen double y`yvar'`i1'  = (stack_`yvar'`i0'_norm + stack_`yvar'`i1'_norm) / 2 if last==1
+	}
 
 
 
@@ -281,7 +286,7 @@ drop lastsum*
 	if "`lwidth'"   == "" local lwidth  0.05
 	if "`ylabcolor'" != "palette" local ycolor  `ylabcolor'
 	if "`palette'" == "" {
-		local palette CET C1	
+		local palette tableau	
 	}
 	else {
 		tokenize "`palette'", p(",")
@@ -291,11 +296,27 @@ drop lastsum*
 	
 	
 
-summ stack_`yvar'0_norm	
-local ymin = -1 * abs(r(min)) * 1.05
-local ymax =      abs(r(min)) * 1.05
+summ stack_`yvar'0_norm, meanonly	
 
+	if "`recenter'" == "" | "`recenter'" == "middle" | "`recenter'" == "mid"  | "`recenter'" == "m" { 
 
+		local ymin = -1 * abs(r(min)) * 1.05
+		local ymax =      abs(r(min)) * 1.05
+	}
+	
+	if "`recenter'" == "bottom" | "`recenter'" == "bot"  | "`recenter'" == "b" { 
+
+		local ymin = 0
+		local ymax = abs(r(min)) * 1.05
+	}	
+
+	if "`recenter'" == "top" | "`recenter'" == "t"  { 
+
+		local ymin = -1 * abs(r(min)) * 1.05
+		local ymax =      0
+	}		
+	
+	
 ds stack_`yvar'*norm
 local items : word count `r(varlist)'
 local items = `items' - 2

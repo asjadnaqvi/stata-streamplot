@@ -1,4 +1,4 @@
-v 1.4
+v 1.5
 d STREAMPLOT: A package for creating streamplots in Stata
 d
 d Asjad Naqvi, 

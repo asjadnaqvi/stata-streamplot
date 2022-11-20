@@ -1,8 +1,8 @@
 ![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-streamplot) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-streamplot) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-streamplot) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-streamplot) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-streamplot)
 
-# streamplot v1.4
+# streamplot v1.5
 
-This package provides the ability to generate stream plots in Stata. It is based on the [Streamplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-10-stream-graphs-9d55db12318a) that I released in December 2020.
+This package provides the ability to generate stream plots in Stata. It is based on the [Streamplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-10-stream-graphs-9d55db12318a) (December 2020).
 
 
 ## Installation
@@ -14,7 +14,7 @@ SSC (**v1.4**):
 ssc install streamplot, replace
 ```
 
-GitHub (**v1.4**):
+GitHub (**v1.5**):
 
 ```
 net install streamplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-streamplot/main/installation/") replace
@@ -50,11 +50,11 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for **v1.4** is as follows:
+The syntax for **v1.5** is as follows:
 
 ```
 streamplot y x [if] [in], by(varname) [ palette(str) smooth(num) alpha(num) labcond(str) offset(num) droplow precent format
-				lcolor(str) lwidth(str) xlabel(str) ylabel(str) ylabsize(num)  ylabcolor(str) 
+				lcolor(str) lwidth(str) xlabel(str) ylabel(str) ylabsize(num)  ylabcolor(str) recenter(top|mid|bot)
 				title(str) subtitle(str) note(str) xsize(num) ysize(num) scheme(str) name(str) ]
 ```
 
@@ -96,6 +96,21 @@ streamplot new_cases date if date > 22400, by(region) smooth(6)
 ```
 
 <img src="/figures/streamplot2.png" height="600">
+
+Recenter the graphs to top or bottom:
+
+```
+streamplot new_cases date if date > 22400, by(region) smooth(6) recenter(bot)
+```
+
+<img src="/figures/streamplot2_1.png" height="600">
+
+```
+streamplot new_cases date if date > 22400, by(region) smooth(6) recenter(top)
+```
+
+<img src="/figures/streamplot2_2.png" height="600">
+
 
 ```
 streamplot new_cases date if date > 22400, by(region) smooth(6) ///
@@ -170,6 +185,10 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to
 
 
 ## Versions
+
+**v1.5 (20 Nov 2022)**
+- Option to recenter the graphs added. 
+- Improve the precision of the calculations.
 
 **v1.4 (08 Nov 2022)**
 - Major code cleanup.
