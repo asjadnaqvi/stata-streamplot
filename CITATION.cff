@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+authors:
+- family-names: "Naqvi"
+  given-names: "Asjad"
+title: "Stata package ``streamplot''"
+version: 1.5
+date-released: 2022-11-20
+url: "https://github.com/asjadnaqvi/stata-streamplot"
