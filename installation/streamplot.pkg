@@ -1,4 +1,4 @@
-v 1.5
+v 1.51
 d {bf:STREAMPLOT}: A package for creating streamplots in Stata
 d
 d Requires: Stata version 15 or higher.
@@ -7,9 +7,9 @@ d KW: Stata
 d KW: graphs
 d KW: streamplot
 d
-d Distribution-Date: 20221120
+d Distribution-Date: 20230528
 d
-d This  version: 20 Nov 2022
+d This  version: 28 May 2023
 d First version: 05 Dec 2021
 d License: MIT
 d

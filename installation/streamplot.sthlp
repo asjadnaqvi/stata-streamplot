@@ -1,7 +1,7 @@
 {smcl}
-{* 20Nov2022}{...}
+{* 23May2023}{...}
 {hi:help streamplot}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.5 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.51 (GitHub)}}
 
 {hline}
 
@@ -45,7 +45,7 @@ Default is {stata colorpalette tableau:{it:tableau}}.{p_end}
 {p2coldent : {opt rec:enter(options)}}This option changes where the graph is recentered. The default option is {opt rec:enter(middle)}. Additional options are {opt rec:enter(top)} or {opt rec:enter(bottom)}.
 For brevity, the following can be specified: {it:middle} = {it:mid} = {it:m}, {it:top} = {it:t}, {it:bottom} = {it:bot} = {it:b}.{p_end}
 
-{p2coldent : {opt offset(num)}}Extends the x-axis range to accommodate labels. The default value is {it:0.12} or 12% of {it:xmax-xmin}.{p_end}
+{p2coldent : {opt offset(num)}}Extends the x-axis range to accommodate labels. The default value is {opt offset(15)} for 15% of {it:xmax-xmin}.{p_end}
 
 {p2coldent : {opt ylabc:olor(str)}}Either takes on a named Stata color, e.g. {it:ylabc(red)} for red labels.
 If {it:ylabc(palette)} is specified, labels are colored based on the color palette.{p_end}
@@ -58,9 +58,8 @@ If {it:ylabc(palette)} is specified, labels are colored based on the color palet
 
 {p2coldent : {opt xlabel()}}This is the standard twoway graph option for labeling and formatting the x-axis. {p_end}
 
-{p2coldent : {opt labcond(str)}}Labels have the group name and the value of the last observation in brackets. The label condition can be used to limit the number of labels shown. 
-For example if we want to label only values which are greater than a certain threhold, then we can write {it:labcond(>= 10000)}. Currently only one condition is supported. 
-Here the main aim is to clean up the figure especially if labels are bunched on top of each other. See example below.{p_end}
+{p2coldent : {opt labcond(num)}}The label condition can be used to limit the number of labels shown. 
+For example, {opt labcond(100)} will only shows labels where the last value is greater than 100.{p_end}
 
 {p2coldent : {opt lw:idth(str)}}The line width of the area stroke. The default is {it:0.05}.{p_end}
 
@@ -98,8 +97,8 @@ Marc Kaulisch has suggested several useful features across various versions.
 
 {title:Package details}
 
-Version      : {bf:streamplot} v1.6
-This release : 20 Nov 2022
+Version      : {bf:streamplot} v1.61
+This release : 23 May 2023
 First release: 06 Aug 2021
 Repository   : {browse "https://github.com/asjadnaqvi/stata-streamplot":GitHub}
 Keywords     : Stata, graph, stream plot
@@ -114,4 +113,12 @@ Twitter      : {browse "https://twitter.com/AsjadNaqvi":@AsjadNaqvi}
 
 {p 4 8 2}Jann, B. (2018). {browse "https://www.stata-journal.com/article.html?article=gr0075":Color palettes for Stata graphics}. The Stata Journal 18(4): 765-785.
 
+{p 4 8 2}Jann, B. (2022). {browse "https://ideas.repec.org/p/bss/wpaper/43.html":Color palettes for Stata graphics: An update}. University of Bern Social Sciences Working Papers No. 43. 
+
+
+{title:Other visualization packages}
+
+{psee}
+    {helpb arcplot}, {helpb alluvial}, {helpb bimap}, {helpb bumparea}, {helpb bumpline}, {helpb circlebar}, {helpb circlepack}, {helpb clipgeo}, {helpb delaunay}, {helpb joyplot}, 
+	{helpb marimekko}, {helpb sankey}, {helpb schemepack}, {helpb spider}, {helpb streamplot}, {helpb sunburst}, {helpb treecluster}, {helpb treemap}
 

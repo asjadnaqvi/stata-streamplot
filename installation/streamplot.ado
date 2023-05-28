@@ -1,12 +1,13 @@
-*! streamplot v1.5 (20 Nov 2022)
+*! streamplot v1.51 (28 May 2023)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
-* v1.5 (20 Nov 2022): recenter option added. improved variable precision.
-* v1.4 (08 Nov 2022): Major code cleanup and some parts reworked. Observation checks. Palette options. label controls.
-* v1.3 (20 Jun 2022). Add marker labels and format options 
-* v1.2 14 Jun 2022: passthru optimizations. error checks. reduce the default smoothing. labels fix
-* v1.1 08 Apr 2022
-* v1.0 06 Aug 2021
+* v1.51 (28 May 2023): Clean up labcond and offset changes to percentages.
+* v1.5  (20 Nov 2022): recenter option added. improved variable precision.
+* v1.4  (08 Nov 2022): Major code cleanup and some parts reworked. Observation checks. Palette options. label controls.
+* v1.3  (20 Jun 2022): Add marker labels and format options 
+* v1.2  (14 Jun 2022): passthru optimizations. error checks. reduce the default smoothing. labels fix
+* v1.1  (08 Apr 2022)
+* v1.0  (06 Aug 2021)
 
 **********************************
 * Step-by-step guide on Medium   *
@@ -25,9 +26,9 @@ program streamplot, sortpreserve
 
 version 15
  
-	syntax varlist(min=2 max=2 numeric) [if] [in], by(varname) [palette(string) alpha(real 100) smooth(real 3)] ///
-		[ LColor(string)  LWidth(string) labcond(string) ] 		///					
-		[ YLABSize(string) YLABel(varname)  YLABColor(string) offset(real 0.12) droplow   ] ///
+	syntax varlist(min=2 max=2 numeric) [if] [in], by(varname) [palette(string) alpha(real 100) smooth(real 3) ] ///
+		[ LColor(string)  LWidth(string) labcond(real 0) ] 		///					
+		[ YLABSize(string) YLABel(varname)  YLABColor(string) offset(real 15) droplow   ] ///
 		[ xlabel(passthru) xtitle(passthru) title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)  ] ///
 		[ PERCENT FORMAT(string) RECenter(string) ] 
 		
@@ -43,7 +44,6 @@ version 15
 	capture findfile labmask.ado
 	if _rc != 0 {
 		qui ssc install labutil, replace
-		exit
 	}
 	
 	marksample touse, strok
@@ -51,7 +51,7 @@ version 15
 
 
 	* Definition  of locals - Default format
-	if `"`format'"' == "" local format "%12.0f"
+	if `"`format'"' == "" local format "%12.0fc"
 	
 
 
@@ -59,6 +59,8 @@ qui {
 preserve	
 	
 	keep if `touse'
+	
+	isid `varlist' `by' // duplicates check
 	
 	gen ones = 1
 	bysort `by': egen counts = sum(ones)
@@ -145,7 +147,7 @@ preserve
 	summ `xvar' if ``yvar'_ma7' != ., meanonly
 	
 	local xrmin = r(min)
-	local xrmax = r(max) + ((r(max) - r(min)) * `offset') 
+	local xrmax = r(max) + ((r(max) - r(min)) * (`offset' / 100)) 
 	
 	*cap drop stack_`yvar'
 	
@@ -260,23 +262,24 @@ drop lastsum*
 
 	foreach x of numlist 1/`items' {
 		
-			if "`labcond'" != "" {
-				local condition "& `yvar'`x' `labcond'"
-			}
-			else {
-				local condition 
-			}
 		
 		   * Addition of percent and format (Marc Kaulisch)
 		   if `"`percent'"'!="" {
 			local ylabvalues `"string(`yvar'`x'_share, `"`format'"') + "%""'
+			
+			local labvar `yvar'`x'_share
+			
 		   }
 		   else {
 			local ylabvalues `"string(`yvar'`x', `"`format'"')"'
+			
+			local labvar `yvar'`x'
 		   }
+		   
+		   di "`labvar'"
 
 		local t : var lab `yvar'`x'
-		gen label`x'_`yvar'  = "`t'" + " (" + `ylabvalues' + ")"	if last==1  `condition' // 
+		gen label`x'_`yvar'  = "`t'" + " (" + `ylabvalues' + ")" if last==1 & `labvar' >= `labcond' 
 
 	}
 
