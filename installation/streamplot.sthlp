@@ -1,7 +1,7 @@
 {smcl}
-{* 23May2023}{...}
+{* 28Aug2023}{...}
 {hi:help streamplot}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.51 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.52 (GitHub)}}
 
 {hline}
 
@@ -97,8 +97,8 @@ Marc Kaulisch has suggested several useful features across various versions.
 
 {title:Package details}
 
-Version      : {bf:streamplot} v1.61
-This release : 23 May 2023
+Version      : {bf:streamplot} v1.52
+This release : 25 Aug 2023
 First release: 06 Aug 2021
 Repository   : {browse "https://github.com/asjadnaqvi/stata-streamplot":GitHub}
 Keywords     : Stata, graph, stream plot

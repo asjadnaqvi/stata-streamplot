@@ -9,8 +9,8 @@
 
 ---
 
-# streamplot v1.51
-(28 May 2023)
+# streamplot v1.52
+(25 Aug 2023)
 
 This package provides the ability to generate stream plots in Stata. It is based on the [Streamplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-10-stream-graphs-9d55db12318a) (December 2020).
 
@@ -24,7 +24,7 @@ SSC (**v1.51**):
 ssc install streamplot, replace
 ```
 
-GitHub (**v1.51**):
+GitHub (**v1.52**):
 
 ```
 net install streamplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-streamplot/main/installation/") replace
@@ -60,7 +60,7 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for **v1.51** is as follows:
+The syntax for the latest version is as follows:
 
 ```
 streamplot y x [if] [in], by(varname) [ palette(str) smooth(num) alpha(num) labcond(str) offset(num) droplow precent format
@@ -196,7 +196,10 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to
 
 ## Change log
 
-**v1.51 (20 Nov 2022)**
+**v1.51 (25 Aug 2023)**
+- Support for `aspect()` and `saving()` added.
+
+**v1.51 (28 May 2023)**
 - Cleaned up `labcond()` to align it with other packages.
 - `offset()` changed to percentages to align it with other packages.
 - Minor code cleanups, updates to defaults, and help file.
