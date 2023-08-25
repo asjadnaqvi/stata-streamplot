@@ -31,7 +31,7 @@ version 15
 		[ LColor(string)  LWidth(string) labcond(real 0) ] 		///					
 		[ YLABSize(string) YLABel(varname)  YLABColor(string) offset(real 15) droplow   ] ///
 		[ xlabel(passthru) xtitle(passthru) title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)  ] ///
-		[ PERCENT FORMAT(string) RECenter(string) ] 
+		[ PERCENT FORMAT(string) RECenter(string) ]  ///
 		[ aspect(passthru) saving(passthru) ]
 		
 		
