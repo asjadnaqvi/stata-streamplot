@@ -196,8 +196,8 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to
 
 ## Change log
 
-**v1.51 (25 Aug 2023)**
-- Support for `aspect()` and `saving()` added.
+**v1.52 (25 Aug 2023)**
+- Support for `aspect()`, `saving()`, `xscale()`, and `graphregion()` added.
 
 **v1.51 (28 May 2023)**
 - Cleaned up `labcond()` to align it with other packages.

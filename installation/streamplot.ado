@@ -1,7 +1,7 @@
 *! streamplot v1.52 (25 Aug 2023)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
-* v1.52 (25 Aug 2023): Support for aspect() and saving() added
+* v1.52 (25 Aug 2023): Support for aspect(), saving(), nolabel, nodraw, xscale() and graphregion() added.
 * v1.51 (28 May 2023): Clean up labcond and offset changes to percentages.
 * v1.5  (20 Nov 2022): recenter option added. improved variable precision.
 * v1.4  (08 Nov 2022): Major code cleanup and some parts reworked. Observation checks. Palette options. label controls.
@@ -32,7 +32,7 @@ version 15
 		[ YLABSize(string) YLABel(varname)  YLABColor(string) offset(real 15) droplow   ] ///
 		[ xlabel(passthru) xtitle(passthru) title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)  ] ///
 		[ PERCENT FORMAT(string) RECenter(string) ]  ///
-		[ aspect(passthru) saving(passthru) ]
+		[ aspect(passthru) saving(passthru) NOLABel nodraw xscale(passthru) graphregion(passthru) ]
 		
 		
 		
@@ -147,6 +147,9 @@ preserve
 
 	// add the range variable on the x-axis
 	summ `xvar' if ``yvar'_ma7' != ., meanonly
+
+	
+	if "`nolabel'"!="" local offset 0  // reset to 0
 	
 	local xrmin = r(min)
 	local xrmax = r(max) + ((r(max) - r(min)) * (`offset' / 100)) 
@@ -344,8 +347,10 @@ colorpalette `palette', n(`numcolor') nograph `poptions'
 		local ycolor  "`r(p`x1')'"
 	}
 	
-	local labels    `labels'  (scatter y`yvar'`x1' `xvar' if last==1, mlabel(label`x1'_`yvar') mcolor(none) mlabsize(`ylabsize') mlabcolor("`ycolor'")) || 			
-		
+	
+	if "`nolabel'"=="" {
+		local labels  `labels'  (scatter y`yvar'`x1' `xvar' if last==1, mlabel(label`x1'_`yvar') mcolor(none) mlabsize(`ylabsize') mlabcolor("`ycolor'")) || 			
+	}	
 
 	}
 
@@ -359,7 +364,7 @@ colorpalette `palette', n(`numcolor') nograph `poptions'
 				ytitle("") `xtitle'  ///
 				ylabel(`ymin' `ymax', nolabels noticks nogrid) ///
 				`xlabel' xscale(noline range(`xrmin' `xrmax'))   ///  
-				`title' `subtitle' `note' `scheme' `xsize' `ysize' `name' `aspect' `saving'
+				`title' `subtitle' `note' `scheme' `xsize' `ysize' `name' `aspect' `saving' `nodraw' `xscale' `graphregion'
 
 restore
 }		
