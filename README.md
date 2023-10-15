@@ -9,8 +9,8 @@
 
 ---
 
-# streamplot v1.52
-(25 Aug 2023)
+# streamplot v1.6
+(15 Oct 2023)
 
 This package provides the ability to generate stream plots in Stata. It is based on the [Streamplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-10-stream-graphs-9d55db12318a) (December 2020).
 
@@ -24,7 +24,7 @@ SSC (**v1.51**):
 ssc install streamplot, replace
 ```
 
-GitHub (**v1.52**):
+GitHub (**v1.6**):
 
 ```
 net install streamplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-streamplot/main/installation/") replace
@@ -63,9 +63,12 @@ graph set window fontface "Arial Narrow"
 The syntax for the latest version is as follows:
 
 ```
-streamplot y x [if] [in], by(varname) [ palette(str) smooth(num) alpha(num) labcond(str) offset(num) droplow precent format
-				lcolor(str) lwidth(str) xlabel(str) ylabel(str) ylabsize(num)  ylabcolor(str) recenter(top|mid|bot)
-				title(str) subtitle(str) note(str) xsize(num) ysize(num) scheme(str) name(str) ]
+streamplot y x [if] [in], by(varname) 
+            [ palette(str) smooth(num) labcond(str) offset(num) alpha(num) droplow yreverse cat(varname) recenter(top|mid|bot) 
+               lcolor(str) lwidth(str) ylabsize(num) ylabcolor(color|palette) percent format(str) nolabel
+               xlabel(str) xtitle(str) ytitle(str) title(str) subtitle(str) note(str) 
+               ysize(num) xsize(num) scheme(str) aspect(str) name(str) saving(str)
+            ]
 ```
 
 See the help file `help streamplot` for details.
@@ -124,8 +127,7 @@ streamplot new_cases date if date > 22400, by(region) smooth(6) recenter(top)
 
 ```
 streamplot new_cases date if date > 22400, by(region) smooth(6) ///
-	title("My Stata stream plot") /// note("test the note") ///
-	labcond(> 20000) ylabsize(1.8) lc(black) lw(0.04)
+	labcond(20000) ylabsize(1.8) lc(black) lw(0.04)
 ```
 
 <img src="/figures/streamplot3.png" height="600">
@@ -133,8 +135,7 @@ streamplot new_cases date if date > 22400, by(region) smooth(6) ///
 
 ```
 streamplot new_cases date if date > 22400, by(region) smooth(6) ///
-	title("My Stata stream plot") ///
-	labcond(> 20000) ylabsize(1.8) lc(black) lw(0.04) format(%12.0fc) offset(0.2)
+	labcond(20000) ylabsize(1.8) lc(black) lw(0.04) format(%12.0fc) offset(20)
 ```
 
 <img src="/figures/streamplot3_1.png" height="600">
@@ -142,16 +143,14 @@ streamplot new_cases date if date > 22400, by(region) smooth(6) ///
 
 ```
 streamplot new_cases date if date > 22400, by(region) smooth(6) palette(CET D11) ///
-	title("My Stata stream plot") ///
-	labcond(> 20000) ylabsize(1.8) lc(black) lw(0.04)  percent format(%3.2f) offset(0.2) ylabc(red)
+	labcond(2) ylabsize(1.8) lc(black) lw(0.04)  percent format(%3.2f) offset(20) ylabc(red)
 ```
 
 <img src="/figures/streamplot3_2.png" height="600">
 
 ```
-streamplot new_cases date if date > 22400, by(region) smooth(6) palette(CET C7, reverse) ///
-	title("My Stata stream plot") ///
-	labcond(> 20000) ylabsize(1.8) lc(black) lw(0.04)  percent format(%3.2f) offset(0.2) ylabc(palette)
+streamplot new_cases date if date > 22400, by(region) smooth(6) palette(CET C6, reverse) ///
+	labcond(1) ylabsize(1.8) lc(black) lw(0.04)  percent format(%3.2f) offset(20) ylabc(palette)
 ```
 
 <img src="/figures/streamplot3_3.png" height="600">
@@ -166,7 +165,7 @@ local xmax = `r(max)'
 streamplot new_cases date if date > 22400, by(region) smooth(6) palette(CET D02)  ///
 	title("My Stata stream plot") /// 
 	subtitle("Subtitle here") note("Note here") ///
-	labcond(> 20000) ylabsize(1.5) lc(white) lw(0.08) ///
+	labcond(20000) ylabsize(1.5) lc(white) lw(0.08) ///
 	xlabel(`xmin'(20)`xmax', angle(90)) xtitle("")
 ```
 
@@ -180,14 +179,19 @@ or a custom graph scheme:
 ```
 streamplot new_cases date if date > 22600, by(region) smooth(6)  palette(CET CBD1)  ///
 	title("My Stata stream plot", size(6)) subtitle("with colorblind-friendly colors", size(4))  ///
-	labcond(> 20000) ylabs(2) lc(black) lw(0.03) offset(0.3) xtitle("") ///
+	labcond(20000) ylabs(2) lc(black) lw(0.03) offset(25) xtitle("") ///
 	scheme(neon) 
 ```
 
-where the dark background `neon` scheme is loaded from the [schemepack](https://github.com/asjadnaqvi/Stata-schemes) suite.
+where the dark background `neon` scheme is loaded from the [schemepack](https://github.com/asjadnaqvi/stata-schemepack) suite.
 
 
 <img src="/figures/streamplot5.png" height="600">
+
+
+
+
+
 
 ## Feedback
 
@@ -195,6 +199,13 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to
 
 
 ## Change log
+
+**v1.6 (15 Oct 2023)**
+- Major update with the `cat()` option added to compare top versus bottom streams.
+- Option `yreverse` fixed.
+- Option `nolab` fixed.
+- Several internal routines rewritten and cleaned up.
+- The option `percent()` is now defined in the 0-100 (or higher range). Changed from the 0-1 range.
 
 **v1.52 (25 Aug 2023)**
 - Support for `aspect()`, `saving()`, `xscale()`, and `graphregion()` added.
