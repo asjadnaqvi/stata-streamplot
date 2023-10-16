@@ -189,7 +189,48 @@ where the dark background `neon` scheme is loaded from the [schemepack](https://
 <img src="/figures/streamplot5.png" height="600">
 
 
+## v1.6 updates
 
+Test the `yreverse` option:
+
+```
+streamplot new_cases date if date > 22400, by(region) smooth(6) ///
+	labcond(20000) ylabsize(1.8) lc(black) lw(0.04) format(%12.0fc) offset(20) yrev
+```
+
+<img src="/figures/streamplot6.png" height="600">
+
+
+Test the region split option. First let's define a variable:
+
+```
+gen ns = .
+replace ns = 2 if inlist(region, 1, 2, 5, 6, 7, 8)
+replace ns = 1 if inlist(region, 3, 4, 9, 10, 11, 12, 13)
+
+lab de ns 2 "North" 1 "South"
+lab val ns ns
+
+tab region ns
+```
+
+And plot it:
+
+```
+streamplot new_cases date if date > 22400, by(region) smooth(6) cat(ns) palette(CET D02) labcond(20000)
+```
+
+<img src="/figures/streamplot7.png" height="600">
+
+
+We can use the new variable itself in the `by()` option:
+
+
+```
+streamplot new_cases date if date > 22400, cat(ns) by(ns) smooth(6) 
+```
+
+<img src="/figures/streamplot8.png" height="600">
 
 
 
