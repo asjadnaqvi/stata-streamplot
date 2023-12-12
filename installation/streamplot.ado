@@ -72,14 +72,15 @@ preserve
 		local rebasecat 1
 	}
 	
-	collapse (sum) `yvar' if `touse', by(`xvar' `by' `cat')
+	collapse (sum) `yvar', by(`xvar' `by' `cat')
 	
-
+	
+	
 	gen ones = 1
 	bysort `by': egen counts = sum(ones)
 	egen tag = tag(`by')
 	summ counts, meanonly
-	 
+	  
 	if r(min) < 10 {
 		if "`droplow'" == "" {	
 			count if counts < 10 & tag==1
@@ -101,9 +102,7 @@ preserve
 	
 	drop ones tag counts
 	
-	
-
-	fillin  `by' `xvar' 
+		fillin  `by' `xvar' 
 	recode `yvar' (.=0)
 	sort `xvar' `by' 	
 	
@@ -116,12 +115,13 @@ preserve
 
 	egen _order = group(`cat' `by')  // this is the primary order category
 	
+	
 
 	cap confirm numeric var `by'	
 		if _rc!=0 {        // if numeric, make sure its numeric is ordered from 1
 			tempvar tempov
-			encode `by', gen(`over2')
-			labmask _order, val(`tempov')
+			encode `by', gen(`tempov')
+			labmask _order, val(`by')
 		}
 		else {  // if string
 			 
