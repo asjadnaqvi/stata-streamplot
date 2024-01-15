@@ -243,7 +243,7 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to
 
 **v1.61 (15 Jan 2024)**
 - Fixed issues with locals.
-- Change `ylabcolor()` and `ylabsize()` to just `labcolor()` and `labsize()` respectively.
+- Change `ylabcolor()` and `ylabsize()` to `labcolor()` and `labsize()` respectively.
 
 **v1.6 (15 Oct 2023)**
 - Major update with the `cat()` option added to compare top versus bottom streams.
