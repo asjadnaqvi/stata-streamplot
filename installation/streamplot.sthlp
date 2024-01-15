@@ -1,7 +1,7 @@
 {smcl}
-{* 15Oct2023}{...}
+{* 15Jan2024}{...}
 {hi:help streamplot}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.6 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.61 (GitHub)}}
 
 {hline}
 
@@ -16,7 +16,7 @@ The command is based on the following guide on Medium: {browse "https://medium.c
 
 {cmd:streamplot} {it:y x} {ifin}, {cmd:by}(varname) 
             {cmd:[} {cmd:palette}({it:str}) {cmd:smooth}({it:num}) {cmd:labcond}({it:str}) {cmd:offset}({it:num}) {cmd:alpha}({it:num}) {cmd:droplow} {cmdab:yrev:erse} {cmd:cat}({it:varname}) {cmdab:rec:enter}(top|mid|bot) 
-               {cmdab:lc:olor}({it:str}) {cmdab:lw:idth}({it:str}) {cmdab:ylabs:ize}({it:num}) {cmdab:ylabc:olor}({it:color}|{it:palette}) {cmd:percent} {cmd:format}({it:str}) {cmdab:nolab:el}
+               {cmdab:lc:olor}({it:str}) {cmdab:lw:idth}({it:str}) {cmdab:labs:ize}({it:num}) {cmdab:labc:olor}({it:color}|{it:palette}) {cmd:percent} {cmd:format}({it:str}) {cmdab:nolab:el}
                {cmd:xlabel}({it:str}) {cmd:xtitle}({it:str}) {cmd:ytitle}({it:str}) {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:note}({it:str}) 
                {cmd:ysize}({it:num}) {cmd:xsize}({it:num}) {cmd:scheme}({it:str}) {cmd:aspect}({it:str}) {cmd:name}({it:str}) {cmd:saving}({it:str})
             {cmd:]}
@@ -57,10 +57,10 @@ Default is {stata colorpalette tableau:{it:tableau}}.{p_end}
 
 {p2coldent : {opt offset(num)}}Extends the x-axis range to accommodate labels. The default value is {opt offset(15)} for 15% of {it:xmax-xmin} of the axis range.{p_end}
 
-{p2coldent : {opt ylabc:olor(str)}}Either takes on a named Stata color, e.g. {opt ylabc(red)} for red labels.
-If {it:ylabc(palette)} is specified, labels are colored based on the color palette.{p_end}
+{p2coldent : {opt labc:olor(str)}}Label colors are either defined as a single color, e.g. default is {opt labc(black)}. Or if {opt labc(palette)} is specified,
+labels have the {opt palette()} colors.{p_end}
 
-{p2coldent : {opt ylabs:ize(str)}}Size of the stream labels. Default value is {opt ylabs(1.4)}.{p_end}
+{p2coldent : {opt labs:ize(str)}}Size of the stream labels. Default value is {opt labs(1.4)}.{p_end}
 
 {p2coldent : {opt percent}}Shows the percentage share for the y-axis categories.{p_end}
 
@@ -103,8 +103,8 @@ See {browse "https://github.com/asjadnaqvi/stata-streamplot":GitHub}.
 
 {title:Package details}
 
-Version      : {bf:streamplot} v1.6
-This release : 15 Oct 2023
+Version      : {bf:streamplot} v1.61
+This release : 15 Jan 2024
 First release: 06 Aug 2021
 Repository   : {browse "https://github.com/asjadnaqvi/stata-streamplot":GitHub}
 Keywords     : Stata, graph, stream plot

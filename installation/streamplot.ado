@@ -1,6 +1,7 @@
-*! streamplot v1.6 (15 Oct 2023)
+*! streamplot v1.61 (15 Jan 2024)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+* v1.61 (15 Jan 2024): fixed wrong locals. changed ylab to just lab.
 * v1.6  (15 Oct 2023): cat() option added. yrev, labcond() fixed. major code cleanup.
 * v1.52 (25 Aug 2023): Support for aspect(), saving(), nolabel, nodraw, xscale() and graphregion() added.
 * v1.51 (28 May 2023): Clean up labcond and offset changes to percentages.
@@ -21,7 +22,7 @@ version 15
 	syntax varlist(min=2 max=2 numeric) [if] [in], by(varname)  ///
 		[ palette(string) alpha(real 100) smooth(real 3) ] ///
 		[ LColor(string)  LWidth(string) labcond(real 0) ] 		///					
-		[ YLABSize(string) YLABel(varname)  YLABColor(string) offset(real 15)    ] ///
+		[ LABSize(string) LABColor(string) offset(real 15)    ] ///
 		[ xlabel(passthru) xtitle(passthru) title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)  ] ///
 		[ PERCENT FORMAT(string) RECenter(string) ]  ///
 		[ aspect(passthru) saving(passthru) NOLABel nodraw xscale(passthru) graphregion(passthru) ]  /// v1.5x
@@ -225,7 +226,7 @@ preserve
 	 
 	gen _stack0 = 0  // we need this for area graphs
 
-	order date _stack0
+	order `xvar' _stack0
 	
 	
 	if `rebasecat' == 0 {
@@ -322,10 +323,10 @@ preserve
 	
 	
 	
-	if "`ylabsize'"  == "" 			local ylabsize "1.4"
+	if "`labsize'"  == "" 			local labsize 1.6
 	if "`lcolor'"    == "" 			local lcolor white
 	if "`lwidth'"    == "" 			local lwidth  0.05
-	if "`ylabcolor'" != "palette" 	local ycolor  `ylabcolor'
+	if "`labcolor'" != "palette" 	local ycolor  `labcolor'
 	if "`palette'" == "" {
 		local palette tableau	
 	}
@@ -385,13 +386,13 @@ summ _stack0_norm, meanonly
 		local areagraph `areagraph' rarea _stack`x0'_norm _stack`x1'_norm `xvar', fcolor("`r(p`x1')'") fi(100) lcolor(`lcolor') lwidth(`lwidth') ||
 
 		
-		if "`ylabcolor'" == "palette" {
+		if "`labcolor'" == "palette" {
 			local ycolor  "`r(p`x1')'"
 		}
 		
 		
 		if "`nolabel'"=="" {
-			local labels  `labels'  (scatter _ylab`x1' `xvar' if last==1, mlabel(_label`x1') mcolor(none) mlabsize(`ylabsize') mlabcolor("`ycolor'")) || 		
+			local labels  `labels'  (scatter _ylab`x1' `xvar' if last==1, mlabel(_label`x1') mcolor(none) mlabsize(`labsize') mlabcolor("`ycolor'")) || 		
 			
 		}	
 
