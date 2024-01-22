@@ -102,13 +102,13 @@ We can generate basic graphs as follows:
 streamplot new_cases date, by(region) 
 ```
 
-<img src="/figures/streamplot1.png" height="600">
+<img src="/figures/streamplot1.png" width="100%">
 
 ```
 streamplot new_cases date if date > 22400, by(region) smooth(6)
 ```
 
-<img src="/figures/streamplot2.png" height="600">
+<img src="/figures/streamplot2.png" width="100%">
 
 Recenter the graphs to top or bottom:
 
@@ -116,13 +116,13 @@ Recenter the graphs to top or bottom:
 streamplot new_cases date if date > 22400, by(region) smooth(6) recenter(bot)
 ```
 
-<img src="/figures/streamplot2_1.png" height="600">
+<img src="/figures/streamplot2_1.png" width="100%">
 
 ```
 streamplot new_cases date if date > 22400, by(region) smooth(6) recenter(top)
 ```
 
-<img src="/figures/streamplot2_2.png" height="600">
+<img src="/figures/streamplot2_2.png" width="100%">
 
 
 ```
@@ -130,7 +130,7 @@ streamplot new_cases date if date > 22400, by(region) smooth(6) ///
 	labcond(20000) ylabsize(1.8) lc(black) lw(0.04)
 ```
 
-<img src="/figures/streamplot3.png" height="600">
+<img src="/figures/streamplot3.png" width="100%">
 
 
 ```
@@ -138,7 +138,7 @@ streamplot new_cases date if date > 22400, by(region) smooth(6) ///
 	labcond(20000) ylabsize(1.8) lc(black) lw(0.04) format(%12.0fc) offset(20)
 ```
 
-<img src="/figures/streamplot3_1.png" height="600">
+<img src="/figures/streamplot3_1.png" width="100%">
 
 
 ```
@@ -146,14 +146,14 @@ streamplot new_cases date if date > 22400, by(region) smooth(6) palette(CET D11)
 	labcond(2) ylabsize(1.8) lc(black) lw(0.04)  percent format(%3.2f) offset(20) ylabc(red)
 ```
 
-<img src="/figures/streamplot3_2.png" height="600">
+<img src="/figures/streamplot3_2.png" width="100%">
 
 ```
 streamplot new_cases date if date > 22400, by(region) smooth(6) palette(CET C6, reverse) ///
 	labcond(1) ylabsize(1.8) lc(black) lw(0.04)  percent format(%3.2f) offset(20) ylabc(palette)
 ```
 
-<img src="/figures/streamplot3_3.png" height="600">
+<img src="/figures/streamplot3_3.png" width="100%">
 
 
 ```
@@ -169,7 +169,7 @@ streamplot new_cases date if date > 22400, by(region) smooth(6) palette(CET D02)
 	xlabel(`xmin'(20)`xmax', angle(90)) xtitle("")
 ```
 
-<img src="/figures/streamplot4.png" height="600">
+<img src="/figures/streamplot4.png" width="100%">
 
 
 
@@ -186,7 +186,7 @@ streamplot new_cases date if date > 22600, by(region) smooth(6)  palette(CET CBD
 where the dark background `neon` scheme is loaded from the [schemepack](https://github.com/asjadnaqvi/stata-schemepack) suite.
 
 
-<img src="/figures/streamplot5.png" height="600">
+<img src="/figures/streamplot5.png" width="100%">
 
 
 ## v1.6 updates
@@ -198,7 +198,7 @@ streamplot new_cases date if date > 22400, by(region) smooth(6) ///
 	labcond(20000) ylabsize(1.8) lc(black) lw(0.04) format(%12.0fc) offset(20) yrev
 ```
 
-<img src="/figures/streamplot6.png" height="600">
+<img src="/figures/streamplot6.png" width="100%">
 
 
 Test the region split option. First let's define a variable:
@@ -220,7 +220,7 @@ And plot it:
 streamplot new_cases date if date > 22400, by(region) smooth(6) cat(ns) palette(CET D02) labcond(20000)
 ```
 
-<img src="/figures/streamplot7.png" height="600">
+<img src="/figures/streamplot7.png" width="100%">
 
 
 We can use the new variable itself in the `by()` option:
@@ -230,7 +230,7 @@ We can use the new variable itself in the `by()` option:
 streamplot new_cases date if date > 22400, cat(ns) by(ns) smooth(6) 
 ```
 
-<img src="/figures/streamplot8.png" height="600">
+<img src="/figures/streamplot8.png" width="100%">
 
 
 
