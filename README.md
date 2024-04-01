@@ -9,8 +9,8 @@
 
 ---
 
-# streamplot v1.61
-(15 Jan 2024)
+# streamplot v1.7
+(01 Apr 2024)
 
 This package provides the ability to generate stream plots in Stata. It is based on the [Streamplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-10-stream-graphs-9d55db12318a) (December 2020).
 
@@ -24,7 +24,7 @@ SSC (**v1.61**):
 ssc install streamplot, replace
 ```
 
-GitHub (**v1.61**):
+GitHub (**v1.7**):
 
 ```
 net install streamplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-streamplot/main/installation/") replace
@@ -62,10 +62,11 @@ graph set window fontface "Arial Narrow"
 
 The syntax for the latest version is as follows:
 
-```
+```stata
 streamplot y x [if] [in], by(varname) 
             [ palette(str) smooth(num) labcond(str) offset(num) alpha(num) droplow yreverse cat(varname) recenter(top|mid|bot) 
                lcolor(str) lwidth(str) labsize(num) labcolor(color|palette) percent format(str) nolabel
+               tline tlcolor(str) tlwidth(str) tlpattern(str) yline(str)
                xlabel(str) xtitle(str) ytitle(str) title(str) subtitle(str) note(str) 
                ysize(num) xsize(num) scheme(str) aspect(str) name(str) saving(str)
             ]
@@ -232,6 +233,67 @@ streamplot new_cases date if date > 22400, cat(ns) by(ns) smooth(6)
 
 <img src="/figures/streamplot8.png" width="100%">
 
+## v1.7 updates
+
+Get the data:
+
+```
+use "https://github.com/asjadnaqvi/stata-streamplot/blob/main/data/wbgdpdata.dta?raw=true", clear
+
+drop if year < 1990
+gen splitvar = category!="M"
+```
+
+
+```
+streamplot value_real year if countrycode=="TSA", by(category) smooth(2) xsize(2) ysize(1)
+```
+
+<img src="/figures/streamplot_tline1.png" width="100%">
+
+```
+streamplot value_real year if countrycode=="TSA", by(category) cat(splitvar) smooth(2)  xsize(2) ysize(1) 
+```
+
+<img src="/figures/streamplot_tline2.png" width="100%">
+
+```
+streamplot value_real year if countrycode=="TSA", by(category) cat(splitvar) smooth(2) palette(tab Green-Orange-Teal) ///
+	yline(0) xsize(2) ysize(1) 
+```
+
+<img src="/figures/streamplot_tline3.png" width="100%">
+
+```
+streamplot value_real year if countrycode=="TSA", by(category) cat(splitvar) smooth(2) palette(tab Green-Orange-Teal) ///
+	yline(0) xsize(2) ysize(1) tline 
+```
+
+<img src="/figures/streamplot_tline4.png" width="100%">
+
+```
+streamplot value_real year if countrycode=="TSA", by(category) cat(splitvar) smooth(2) palette(tab Nuriel Stone) ///
+	yline(0) xsize(2) ysize(1) tline tlc(white) tlw(0.8) tlp(dash)	
+```
+
+<img src="/figures/streamplot_tline5.png" width="100%">
+
+```
+streamplot value_real year if countrycode=="TSA", by(category) cat(splitvar) smooth(2) palette(tab Green-Orange-Teal) ///
+	yline(0) xsize(2) ysize(1) tline tlc(black) tlw(0.5) tlp(dash)	
+```
+
+<img src="/figures/streamplot_tline6.png" width="100%">
+
+```
+streamplot value_real year if countrycode=="TSA", by(category) cat(splitvar) smooth(2) palette(tab Green-Orange-Teal) ///
+	yline(0) xsize(2) ysize(1) tline tlc(black) tlw(0.5) tlp(dash) xtitle("") ///
+	xlabel(1990(2)2022, angle(90)) labsize(2.2) offset(8) 	///
+	title("{fontface Arial Bold:GDP Expenditures in South Asia (Constant 2015 USD billions)}")	///
+	note("World Bank Open Data.", size(2))
+```
+
+<img src="/figures/streamplot_tline7.png" width="100%">
 
 
 ## Feedback
@@ -240,6 +302,11 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to
 
 
 ## Change log
+
+**v1.7 (01 Apr 2024)**
+- Added trendline options: `tline`, `tlcolor()`, `tlpattern()`, `tlwidth()`.
+- Added additional checks for plotting data.
+- Better handling of missing values and categories.
 
 **v1.61 (15 Jan 2024)**
 - Fixed issues with locals.

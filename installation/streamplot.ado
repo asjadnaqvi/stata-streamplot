@@ -1,6 +1,7 @@
-*! streamplot v1.61 (15 Jan 2024)
+*! streamplot v1.7 (01 Apr 2024)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+* v1.7	(01 Apr 2024): trendline, yline, drop if by() is missing
 * v1.61 (15 Jan 2024): fixed wrong locals. changed ylab to just lab.
 * v1.6  (15 Oct 2023): cat() option added. yrev, labcond() fixed. major code cleanup.
 * v1.52 (25 Aug 2023): Support for aspect(), saving(), nolabel, nodraw, xscale() and graphregion() added.
@@ -9,8 +10,8 @@
 * v1.4  (08 Nov 2022): Major code cleanup and some parts reworked. Observation checks. Palette options. label controls.
 * v1.3  (20 Jun 2022): Add marker labels and format options 
 * v1.2  (14 Jun 2022): passthru optimizations. error checks. reduce the default smoothing. labels fix
-* v1.1  (08 Apr 2022)
-* v1.0  (06 Aug 2021)
+* v1.1  (08 Apr 2022): First release
+* v1.0  (06 Aug 2021): Beta version
 
 
 cap program drop streamplot
@@ -26,8 +27,8 @@ version 15
 		[ xlabel(passthru) xtitle(passthru) title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)  ] ///
 		[ PERCENT FORMAT(string) RECenter(string) ]  ///
 		[ aspect(passthru) saving(passthru) NOLABel nodraw xscale(passthru) graphregion(passthru) ]  /// v1.5x
-		[ cat(varname) YREVerse  ]   // v1.6
-		
+		[ cat(varname) YREVerse  ]  ///  // v1.6
+		[ tline TLColor(string) TLWidth(string) TLPattern(string) droplow yline(passthru)	 ]	// v1.7
 		
 		
 	// check dependencies
@@ -63,6 +64,15 @@ preserve
 	keep if `touse'
 	
 	
+	cap confirm numeric var `by'	
+		if !_rc {  
+			drop if `by'==.
+		}
+		else {
+			drop if `by'==""
+		}
+	
+	recode `yvar' (. = 0)
 	
 	if "`cat'"=="" {
 		gen _cat = 1  // run a dummy
@@ -75,8 +85,7 @@ preserve
 	
 	collapse (sum) `yvar', by(`xvar' `by' `cat')
 	
-	
-	
+
 	gen ones = 1
 	bysort `by': egen counts = sum(ones)
 	egen tag = tag(`by')
@@ -103,45 +112,46 @@ preserve
 	
 	drop ones tag counts
 	
-		fillin  `by' `xvar' 
+	fillin  `by' `xvar' 
 	recode `yvar' (.=0)
-	sort `xvar' `by' 	
+	sort `by' `cat' `xvar'
 	
 	
 	
 	// pass on cat variable to added observations
 	
-	bysort `by': replace `cat' = `cat'[_N] if `cat'==.
+	bysort `by': replace `cat' = `cat'[1] if `cat'==.
 	cap drop _fillin
 
 	egen _order = group(`cat' `by')  // this is the primary order category
 	
-	
 
 	cap confirm numeric var `by'	
-		if _rc!=0 {        // if numeric, make sure its numeric is ordered from 1
-			tempvar tempov
-			encode `by', gen(`tempov')
-			labmask _order, val(`by')
-		}
-		else {  // if string
-			 
-						
-			if "`: value label `by''" != "" {
+		if !_rc {        // if numeric
+			if "`: value label `by''" != "" {   // with val labels
 				tempvar tempov
 				decode `by', gen(`tempov')		
-				labmask _order, val(`tempov')
+				cap labmask _order, val(`tempov')
+				lab val _order _order
 			}
-			else {
-				labmask _order, val(`by')
-
+			else {				// without val labels
+				tempvar tempov
+				encode `by', gen(`tempov')
+				cap labmask _order, val(`by')
+				lab val _order _order
 			}
 		}
+		else {  // if string
+			label list
+			cap labmask _order, val(`by')
+			lab val _order _order
+		}
+	
+	
 	
 	local by _order
 	
-	
-	
+
 	if "`yreverse'" != "" {
 					
 		clonevar over2 = `by'
@@ -161,12 +171,13 @@ preserve
 	}		
 	
 	
+	
 	keep  `xvar' `cat' `by' `yvar' 
 	order `xvar' `cat' `by' `yvar' 
 	
 	xtset `by' `xvar'  
 	
-
+	
 	replace `yvar' = 0 if `yvar' < 0	 // this is technically wrong but we do it anyways   // fix in later versions
 	tssmooth ma _ma  = `yvar' , w(`smooth' 1 0) 
 
@@ -182,6 +193,16 @@ preserve
 	sort `xvar' `by' // extremely important for stack order.	
 	by `xvar': gen double _stack = sum(_ma) 
 	
+	if `rebasecat' == 1 {
+		egen _temp = group(`cat')
+		gen _nsval = _ma * (_temp==2) + -_ma * (_temp==1)
+		by `xvar': egen double _linevar = sum(_nsval) 
+	}
+	else {
+		bysort `xvar': egen double _linevar = max(_stack)
+	}
+	
+
 
 	** preserve the labels for use later
 
@@ -195,7 +216,6 @@ preserve
 	}
 
 
-
 	if "`yreverse'" == "" {
 		summ `cat'
 		summ _order if `cat'==r(max)
@@ -207,13 +227,16 @@ preserve
 		local rebase = r(max) 
 	}
 
-
+	summ _order, meanonly
+	local lastval = r(max)
+	
+	
 	ren `yvar' _yvar
-	drop `cat'
+	
+	cap drop `cat' _temp _nsval
 
 	
-
-	reshape wide _stack _yvar _ma  , i(`xvar') j(`by')  
+	reshape wide _stack _yvar _ma  , i(`xvar' _linevar) j(`by')  
 
 	foreach x of local idlabels {        // here we know how many variables we have    
 
@@ -222,10 +245,11 @@ preserve
 		lab var _yvar`x'  "`idlab_`x''" 
 	}
 
-		
-	 
+	
 	gen _stack0 = 0  // we need this for area graphs
 
+	
+	
 	order `xvar' _stack0
 	
 	
@@ -257,9 +281,8 @@ preserve
 		gen double `x'_norm  = `x' - _meanval
 	}	
 	
-	drop _meanval
-
-
+	if `rebasecat' == 0 	replace _linevar = _linevar - _meanval
+	
 	// this part is for the mid points 		
 
 	summ `xvar'
@@ -279,15 +302,12 @@ preserve
 		gen double _ylab`i1'  = (_stack`i0'_norm + _stack`i1'_norm) / 2 if last==1
 	}
 
-
-
 	egen double _lastsum  = rowtotal(_ma*)  if last==1
 
 
 	foreach x of varlist _ma* {
 		gen double `x'_share = (`x' / _lastsum) * 100
 		}
-
 
 	drop _lastsum
 
@@ -367,13 +387,23 @@ summ _stack0_norm, meanonly
 		local ymax =  1 * abs(r(max)) * 1.05	
 	}
 	
+
+	if "`tline'" != "" {
+		
+		if "`tlcolor'"   == "" 	local tlcolor black
+		if "`tlwidth'"   == "" 	local tlwidth 0.3
+		if "`tlpattern'" == "" 	local tlpattern solid
+		
+		local trendline (line _linevar `xvar', lc(`tlcolor') lw(`tlwidth') lp(`tlpattern'))
+	}
+	
+	
 	
 	ds _stack*norm
 	local items : word count `r(varlist)'
 	local items = `items' - 2
 	
 
-	
 	forval x = 0/`items' {  
 
 	local numcolor = `items' + 1
@@ -401,17 +431,19 @@ summ _stack0_norm, meanonly
 	
 	twoway /// 
 		`areagraph' ///
-		`labels'	///
+		`labels'	///									// (linei 0 date, lc(gs10) lp(dash)) ///
+		`trendline'	///
 			, ///
 				legend(off) ///
 				yscale(noline) ///
 				ytitle("") `xtitle'  ///
 				ylabel(`ymin' `ymax', nolabels noticks nogrid) ///
-				`xlabel' xscale(noline range(`xrmin' `xrmax'))   ///  
+				`xlabel' xscale(noline range(`xrmin' `xrmax')) `yline'   ///  
 				`title' `subtitle' `note' `scheme' `xsize' `ysize' `name' `aspect' `saving' `nodraw' `xscale' `graphregion'
 
 				
 	*/
+
 restore
 }		
 		

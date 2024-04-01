@@ -1,7 +1,7 @@
 {smcl}
-{* 15Jan2024}{...}
+{* 01Apr2024}{...}
 {hi:help streamplot}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.61 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.7 (GitHub)}}
 
 {hline}
 
@@ -15,8 +15,9 @@ The command is based on the following guide on Medium: {browse "https://medium.c
 {p 8 15 2}
 
 {cmd:streamplot} {it:y x} {ifin}, {cmd:by}(varname) 
-            {cmd:[} {cmd:palette}({it:str}) {cmd:smooth}({it:num}) {cmd:labcond}({it:str}) {cmd:offset}({it:num}) {cmd:alpha}({it:num}) {cmd:droplow} {cmdab:yrev:erse} {cmd:cat}({it:varname}) {cmdab:rec:enter}(top|mid|bot) 
+            {cmd:[} {cmd:palette}({it:str}) {cmd:smooth}({it:num}) {cmd:labcond}({it:str}) {cmd:offset}({it:num}) {cmd:alpha}({it:num}) {cmd:droplow} {cmdab:yrev:erse} {cmd:cat}({it:varname}) {cmdab:rec:enter}({it:top}|{it:mid}|{it:bot}) 
                {cmdab:lc:olor}({it:str}) {cmdab:lw:idth}({it:str}) {cmdab:labs:ize}({it:num}) {cmdab:labc:olor}({it:color}|{it:palette}) {cmd:percent} {cmd:format}({it:str}) {cmdab:nolab:el}
+               {cmd:tline} {cmdab:tlc:olor}({it:str}) {cmdab:tlw:idth}({it:str}) {cmdab:tlp:attern}({it:str}) {cmd:yline}({it:str})
                {cmd:xlabel}({it:str}) {cmd:xtitle}({it:str}) {cmd:ytitle}({it:str}) {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:note}({it:str}) 
                {cmd:ysize}({it:num}) {cmd:xsize}({it:num}) {cmd:scheme}({it:str}) {cmd:aspect}({it:str}) {cmd:name}({it:str}) {cmd:saving}({it:str})
             {cmd:]}
@@ -33,7 +34,7 @@ The options are described as follows:
 
 {p2coldent : {opt by(var)}}This is the group variable that defines the layers.{p_end}
 
-{p2coldent : {opt cat(var)}}This is a binary variable that defines the split above and below the y = 0 axis. Useful for comparise {opt by()} variables across two categories.
+{p2coldent : {opt cat(var)}}This is a binary variable that defines the split above and below the y=0 axis. Useful for comparise {opt by()} variables across two categories.
 Note that defining {opt cat()} overwrites the {opt recenter()} option explained below.{p_end}
 
 {p2coldent : {opt rec:enter(top|mid|bot)}}This option changes where the graph is recentered. The default option is {opt rec:enter(middle)}. 
@@ -44,8 +45,8 @@ For brevity, the following can be specified: {it:middle} = {it:mid} = {it:m}, {i
 
 {p2coldent : {opt nolab:el}}Hide the variable labels.{p_end}
 
-{p2coldent : {opt droplow}}If there are fewer than 10 observations per {opt by()} variable, the command will give an error. If only some groups have this issue, 
-then use the {opt droplow} option to drop these observations. If all groups have few observations, then {cmd:streamplot} cannot be used.{p_end}
+{p2coldent : {opt droplow}}If there are fewer than 10 observations per {opt by()} variable, the command will throw an error. If only some groups have this issue, 
+then use the {opt droplow} option to drop these observations. This option is intended to quickly plot the data. Ideally, clean up the data before plotting.{p_end}
 
 {p2coldent : {opt smooth(num)}}The smoothing parameter defined in terms of last observations to use. The default value is {opt smooth(3)}.
 A value of 0 implies no smoothing.{p_end}
@@ -69,11 +70,22 @@ labels have the {opt palette()} colors.{p_end}
 {p2coldent : {opt xlabel()}}This is the standard twoway graph option for labeling and formatting the x-axis. {p_end}
 
 {p2coldent : {opt labcond(num)}}The label condition can be used to limit the number of labels shown. 
-For example, {opt labcond(100)} will only shows labels where the last value is greater than 100.{p_end}
+For example, {opt labcond(100)} will only shows labels where the last data point value is greater than 100.{p_end}
 
 {p2coldent : {opt lw:idth(str)}}The line width of the area stroke. The default is {opt lw(0.05)}.{p_end}
 
 {p2coldent : {opt lc:olor(str)}}The line color of the area stroke. The default is {opt lc(white)}.{p_end}
+
+
+{p2coldent : {opt tline}}Add a timeline which is the running sum of all the layers. Helpful for showing aggregates if {opt cat()} is used.{p_end}
+
+{p2coldent : {opt tlw:idth(str)}}The timeline width. The default is {opt tlw(0.3)}.{p_end}
+
+{p2coldent : {opt tlc:olor(str)}}The timeline color. The default is {opt tlc(black)}.{p_end}
+
+{p2coldent : {opt tlp:attern(str)}}The timeline pattern. The default is {opt tlp(solid)}.{p_end}
+
+{p2coldent : {opt yline()}}This is a standard twoway graph option. Useful for marking horizontal thresholds.{p_end}
 
 {p2coldent : {opt xtitle(), ytitle(), xsize(), ysize()}}These are standard twoway graph options.{p_end}
 
@@ -103,8 +115,8 @@ See {browse "https://github.com/asjadnaqvi/stata-streamplot":GitHub}.
 
 {title:Package details}
 
-Version      : {bf:streamplot} v1.61
-This release : 15 Jan 2024
+Version      : {bf:streamplot} v1.7
+This release : 01 Apr 2024
 First release: 06 Aug 2021
 Repository   : {browse "https://github.com/asjadnaqvi/stata-streamplot":GitHub}
 Keywords     : Stata, graph, stream plot

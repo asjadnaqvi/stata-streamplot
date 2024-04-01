@@ -1,10 +1,10 @@
-v 1.61
+v 1.7
 d STREAMPLOT: A package for creating stream plots in Stata
 d
 d Asjad Naqvi, 
 d asjadnaqvi@gmail.com
 d
-d Distribution-Date: 20240115
+d Distribution-Date: 20240401
 d
 d https://medium.com/the-stata-guide
 d https://github.com/asjadnaqvi/Stata-schemes
