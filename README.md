@@ -1,16 +1,17 @@
 
 ![streamplot](https://github.com/asjadnaqvi/stata-streamplot/assets/38498046/4b7bbaab-8667-4f47-a119-ec93dcd607a3)
 
-![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-streamplot) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-streamplot) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-streamplot) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-streamplot) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-streamplot)
-
 ---
 
 [Installation](#Installation) | [Syntax](#Syntax) | [Examples](#Examples) | [Feedback](#Feedback) | [Change log](#Change-log)
 
 ---
 
-# streamplot v1.7
-(01 Apr 2024)
+![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-streamplot) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-streamplot) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-streamplot) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-streamplot) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-streamplot)
+
+
+# streamplot v1.8
+(25 Apr 2024)
 
 This package provides the ability to generate stream plots in Stata. It is based on the [Streamplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-10-stream-graphs-9d55db12318a) (December 2020).
 
@@ -24,12 +25,11 @@ SSC (**v1.61**):
 ssc install streamplot, replace
 ```
 
-GitHub (**v1.7**):
+GitHub (**v1.8**):
 
 ```
 net install streamplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-streamplot/main/installation/") replace
 ```
-
 
 
 The `palettes` package is required to run this command:
@@ -39,8 +39,6 @@ ssc install palettes, replace
 ssc install colrspace, replace
 ```
 
-Even if you have these packages installed, please check for updates: `ado update, update`.
-
 If you want to make a clean figure, then it is advisable to load a clean scheme. These are several available and I personally use the following:
 
 ```
@@ -48,14 +46,11 @@ ssc install schemepack, replace
 set scheme white_tableau  
 ```
 
-You can also push the scheme directly into the graph using the `scheme(schemename)` option. See the help file for details or the example below.
-
 I also prefer narrow fonts in figures with long labels. You can change this as follows:
 
 ```
 graph set window fontface "Arial Narrow"
 ```
-
 
 
 ## Syntax
@@ -177,7 +172,7 @@ streamplot new_cases date if date > 22400, by(region) smooth(6) palette(CET D02)
 
 or a custom graph scheme:
 
-```
+```stata
 streamplot new_cases date if date > 22600, by(region) smooth(6)  palette(CET CBD1)  ///
 	title("My Stata stream plot", size(6)) subtitle("with colorblind-friendly colors", size(4))  ///
 	labcond(20000) ylabs(2) lc(black) lw(0.03) offset(25) xtitle("") ///
@@ -296,12 +291,52 @@ streamplot value_real year if countrycode=="TSA", by(category) cat(splitvar) smo
 <img src="/figures/streamplot_tline7.png" width="100%">
 
 
+## v1.8 updates
+
+```stata
+streamplot value_real year if countrycode=="TSA", by(category) cat(splitvar) smooth(2) palette(tab Green-Orange-Teal) ///
+	yline(0) xsize(2) ysize(1) tline tlc(black) tlw(0.5) tlp(dash) xtitle("") xline(2020) ///
+	xlabel(1990(2)2022, angle(90)) labsize(2.2) offset(8) labprop 	///
+	title("{fontface Arial Bold:GDP Expenditures in South Asia (Constant 2015 USD billions)}")	///
+	note("World Bank Open Data.", size(2))
+```
+
+<img src="/figures/streamplot_labprop1.png" width="100%">
+
+```
+streamplot value_real year  if countrycode=="TSA", by(category) smooth(2) palette(tab Green-Orange-Teal) ///
+	xsize(2) ysize(1) xtitle("") ///
+	xlabel(, angle(90)) labsize(2.2) offset(8) recenter(bottom)  labprop  	///
+	title("{fontface Arial Bold:GDP Expenditures in South Asia (Constant 2015 USD billions)}")	///
+	note("World Bank Open Data.", size(2)) 
+```
+
+<img src="/figures/streamplot_labprop2.png" width="100%">
+
+```
+streamplot value_real year  if countrycode=="TSA", by(category) smooth(2) palette(tab Green-Orange-Teal) ///
+	xsize(2) ysize(1) xtitle("")  ///
+	xlabel(, angle(90)) labsize(2.2) offset(8) recenter(bottom) labprop labcolor(palette)  	///
+	title("{fontface Arial Bold:GDP Expenditures in South Asia (Constant 2015 USD billions)}")	///
+	note("World Bank Open Data.", size(2)) 
+```
+
+<img src="/figures/streamplot_labprop3.png" width="100%">
+
+
 ## Feedback
 
 Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to report errors, feature enhancements, and/or other requests.
 
 
 ## Change log
+
+**v1.8 (25 Apr 2024)**
+- Added `labprop` and `labscale()` options to allow easy label scaling.
+- Added `share` and `percent` as substitutes.
+- Major code rework to optimize the speed of the graph generation.
+- Generic twoway options added.
+- 
 
 **v1.7 (01 Apr 2024)**
 - Added trendline options: `tline`, `tlcolor()`, `tlpattern()`, `tlwidth()`.

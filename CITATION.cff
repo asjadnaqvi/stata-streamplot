@@ -4,5 +4,5 @@ authors:
   given-names: "Asjad"
 title: "Stata package ``streamplot''"
 version: 1.7
-date-released: 2024-04-01
+date-released: 2024-04-25
 url: "https://github.com/asjadnaqvi/stata-streamplot"

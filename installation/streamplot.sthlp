@@ -1,7 +1,7 @@
 {smcl}
-{* 01Apr2024}{...}
+{* 26Apr2024}{...}
 {hi:help streamplot}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.7 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.8 (GitHub)}}
 
 {hline}
 
@@ -17,9 +17,7 @@ The command is based on the following guide on Medium: {browse "https://medium.c
 {cmd:streamplot} {it:y x} {ifin}, {cmd:by}(varname) 
             {cmd:[} {cmd:palette}({it:str}) {cmd:smooth}({it:num}) {cmd:labcond}({it:str}) {cmd:offset}({it:num}) {cmd:alpha}({it:num}) {cmd:droplow} {cmdab:yrev:erse} {cmd:cat}({it:varname}) {cmdab:rec:enter}({it:top}|{it:mid}|{it:bot}) 
                {cmdab:lc:olor}({it:str}) {cmdab:lw:idth}({it:str}) {cmdab:labs:ize}({it:num}) {cmdab:labc:olor}({it:color}|{it:palette}) {cmd:percent} {cmd:format}({it:str}) {cmdab:nolab:el}
-               {cmd:tline} {cmdab:tlc:olor}({it:str}) {cmdab:tlw:idth}({it:str}) {cmdab:tlp:attern}({it:str}) {cmd:yline}({it:str})
-               {cmd:xlabel}({it:str}) {cmd:xtitle}({it:str}) {cmd:ytitle}({it:str}) {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:note}({it:str}) 
-               {cmd:ysize}({it:num}) {cmd:xsize}({it:num}) {cmd:scheme}({it:str}) {cmd:aspect}({it:str}) {cmd:name}({it:str}) {cmd:saving}({it:str})
+               {cmd:tline} {cmdab:tlc:olor}({it:str}) {cmdab:tlw:idth}({it:str}) {cmdab:tlp:attern}({it:str}) {cmd:yline}({it:str}) {cmd:labprop} {cmd:labscale}({it:num}) {cmd:*}
             {cmd:]}
 
 
@@ -76,7 +74,6 @@ For example, {opt labcond(100)} will only shows labels where the last data point
 
 {p2coldent : {opt lc:olor(str)}}The line color of the area stroke. The default is {opt lc(white)}.{p_end}
 
-
 {p2coldent : {opt tline}}Add a timeline which is the running sum of all the layers. Helpful for showing aggregates if {opt cat()} is used.{p_end}
 
 {p2coldent : {opt tlw:idth(str)}}The timeline width. The default is {opt tlw(0.3)}.{p_end}
@@ -85,17 +82,14 @@ For example, {opt labcond(100)} will only shows labels where the last data point
 
 {p2coldent : {opt tlp:attern(str)}}The timeline pattern. The default is {opt tlp(solid)}.{p_end}
 
-{p2coldent : {opt yline()}}This is a standard twoway graph option. Useful for marking horizontal thresholds.{p_end}
+{p2coldent : {opt labprop}}Scale the bar labels based on the relative stocks.{p_end}
 
-{p2coldent : {opt xtitle(), ytitle(), xsize(), ysize()}}These are standard twoway graph options.{p_end}
+{p2coldent : {opt labscale(num)}}Scale factor of {opt labprop}. Default value is {opt labscale(0.3333)}. Values closer to zero result in more exponential scaling, while values closer
+to one are almost linear scaling. This is an advanced option so use carefully.{p_end}
 
-{p2coldent : {opt title(), subtitle(), note(), name()}}These are standard twoway graph options.{p_end}
+{p2coldent : {opt *}}All other standard twoway options unless overwritten by the program.{p_end}
 
-{p2coldent : {opt scheme(string)}}Load the custom scheme. Above options can be used to fine tune individual elements.{p_end}
-
-{synoptline}
-{p2colreset}{...}
-
+{hline}
 
 {title:Dependencies}
 
@@ -115,8 +109,8 @@ See {browse "https://github.com/asjadnaqvi/stata-streamplot":GitHub}.
 
 {title:Package details}
 
-Version      : {bf:streamplot} v1.7
-This release : 01 Apr 2024
+Version      : {bf:streamplot} v1.8
+This release : 25 Apr 2024
 First release: 06 Aug 2021
 Repository   : {browse "https://github.com/asjadnaqvi/stata-streamplot":GitHub}
 Keywords     : Stata, graph, stream plot
@@ -138,5 +132,5 @@ Twitter      : {browse "https://twitter.com/AsjadNaqvi":@AsjadNaqvi}
 
 {psee}
     {helpb arcplot}, {helpb alluvial}, {helpb bimap}, {helpb bumparea}, {helpb bumpline}, {helpb circlebar}, {helpb circlepack}, {helpb clipgeo}, {helpb delaunay}, {helpb joyplot}, 
-	{helpb marimekko}, {helpb sankey}, {helpb schemepack}, {helpb spider}, {helpb streamplot}, {helpb sunburst}, {helpb treecluster}, {helpb treemap}
+	{helpb marimekko}, {helpb sankey}, {helpb schemepack}, {helpb spider}, {helpb streamplot}, {helpb sunburst}, {helpb treecluster}, {helpb treemap}, {helpb waffle}
 
