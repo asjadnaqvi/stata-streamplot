@@ -1,6 +1,7 @@
-*! streamplot v1.8 (25 Apr 2024)
+*! streamplot v1.81 (30 Apr 2024)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+* v1.81	(30 Apr 2024): added area option to creat
 * v1.8	(25 Apr 2024): added labscale option. Added percent/share as substitutes. more flexible for generic options.
 * v1.7	(01 Apr 2024): trendline, yline, drop if by() is missing
 * v1.61 (15 Jan 2024): fixed wrong locals. changed ylab to just lab.
@@ -27,7 +28,7 @@ version 15
 		[ NOLABel nodraw  ]  /// v1.5x
 		[ cat(varname) YREVerse  ]  ///  // v1.6
 		[ tline TLColor(string) TLWidth(string) TLPattern(string) droplow 	 ] ///	// v1.7
-		[ * labprop labscale(real 0.3333) percent share ]  // 1.8 options
+		[ * labprop labscale(real 0.3333) percent share area ]  // 1.8 options
 		
 		
 	// check dependencies
@@ -82,8 +83,8 @@ preserve
 	collapse (sum) `yvar', by(`xvar' `by' `cat')
 	
 
-	gen ones = 1
-	bysort `by': egen counts = sum(ones)
+	gen _ones = 1
+	bysort `by': egen counts = sum(_ones)
 	egen tag = tag(`by')
 	summ counts, meanonly
 	  
@@ -106,7 +107,7 @@ preserve
 		exit
 	}
 	
-	drop ones tag counts
+	drop _ones tag counts
 	
 	fillin  `by' `xvar' 
 	recode `yvar' (.=0)
@@ -175,6 +176,15 @@ preserve
 	
 	
 	replace `yvar' = 0 if `yvar' < 0	 // this is technically wrong but we do it anyways   // fix in later versions
+	
+	
+	if "`area'" != "" {
+		bysort `xvar': egen double _sum = sum(`yvar')
+		replace `yvar' = (`yvar' / _sum) * 100
+		drop _sum
+	}
+	
+	
 	tssmooth ma _ma  = `yvar' , w(`smooth' 1 0) 
 
 	// add the range variable on the x-axis
@@ -198,7 +208,6 @@ preserve
 		bysort `xvar': egen double _linevar = max(_stack)
 	}
 	
-
 
 	** preserve the labels for use later
 
@@ -272,6 +281,12 @@ preserve
 	}
 	
 	
+	if "`area'" != "" { 	// overwrite
+		cap drop _meanval
+		gen _meanval = 0
+	}
+	
+	
 	
 	foreach x of varlist _stack* {
 		gen double `x'_norm  = `x' - _meanval
@@ -280,9 +295,6 @@ preserve
 	if `rebasecat' == 0 	replace _linevar = _linevar - _meanval
 	
 	// this part is for the mid points 		
-
-	*summ `xvar'
-	*gen last = 1 if `xvar'==r(max)
 
 	gen double _ylab 		= .
 	gen double _yval 		= .
@@ -316,7 +328,7 @@ preserve
 	summ `xvar', meanonly
 	gen _xlab = r(max) if _yval!=.
 	
-**** automate this part
+	**** automate this part
 
 
 	ds _stack*norm
@@ -325,7 +337,7 @@ preserve
 
 	
 	if "`format'"  == "" {
-		if "`percent'"=="" & "`share'"=="" {			
+		if "`percent'"=="" & "`share'"=="" & "`area'"=="" {			
 			local format %15.0fc
 		}
 		else {

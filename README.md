@@ -10,8 +10,8 @@
 ![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-streamplot) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-streamplot) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-streamplot) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-streamplot) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-streamplot)
 
 
-# streamplot v1.8
-(25 Apr 2024)
+# streamplot v1.81
+(30 Apr 2024)
 
 This package provides the ability to generate stream plots in Stata. It is based on the [Streamplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-10-stream-graphs-9d55db12318a) (December 2020).
 
@@ -25,7 +25,7 @@ SSC (**v1.61**):
 ssc install streamplot, replace
 ```
 
-GitHub (**v1.8**):
+GitHub (**v1.81**):
 
 ```
 net install streamplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-streamplot/main/installation/") replace
@@ -60,7 +60,7 @@ The syntax for the latest version is as follows:
 ```stata
 streamplot y x [if] [in], by(varname) 
             [ palette(str) smooth(num) labcond(str) offset(num) alpha(num) droplow yreverse cat(varname) recenter(top|mid|bot) 
-               lcolor(str) lwidth(str) labsize(num) labcolor(color|palette) percent format(str) nolabel
+               lcolor(str) lwidth(str) labsize(num) labcolor(color|palette) percent format(str) nolabel area
                tline tlcolor(str) tlwidth(str) tlpattern(str) yline(str)
                xlabel(str) xtitle(str) ytitle(str) title(str) subtitle(str) note(str) 
                ysize(num) xsize(num) scheme(str) aspect(str) name(str) saving(str)
@@ -324,12 +324,28 @@ streamplot value_real year  if countrycode=="TSA", by(category) smooth(2) palett
 <img src="/figures/streamplot_labprop3.png" width="100%">
 
 
+## v1.81 stacked area graph
+
+```
+streamplot value_real year  if countrycode=="TSA", by(category) smooth(0) area recenter(bottom)  ///
+	xsize(2) ysize(1) xtitle("") palette(tab Green-Orange-Teal)  ///
+	xlabel(, angle(90)) labsize(2.2) offset(8)   	///
+	title("{fontface Arial Bold:GDP Expenditures in South Asia (Constant 2015 USD billions)}")	///
+	note("World Bank Open Data.", size(2))  
+```
+
+<img src="/figures/streamplot_labprop4.png" width="100%">
+
+
 ## Feedback
 
 Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to report errors, feature enhancements, and/or other requests.
 
 
 ## Change log
+
+**v1.81 (30 Apr 2024)**
+- Added `area` option to allow stacked area graphs.
 
 **v1.8 (25 Apr 2024)**
 - Added `labprop` and `labscale()` options to allow easy label scaling.

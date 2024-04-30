@@ -1,7 +1,7 @@
 {smcl}
-{* 26Apr2024}{...}
+{* 30Apr2024}{...}
 {hi:help streamplot}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.8 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.81 (GitHub)}}
 
 {hline}
 
@@ -16,7 +16,7 @@ The command is based on the following guide on Medium: {browse "https://medium.c
 
 {cmd:streamplot} {it:y x} {ifin}, {cmd:by}(varname) 
             {cmd:[} {cmd:palette}({it:str}) {cmd:smooth}({it:num}) {cmd:labcond}({it:str}) {cmd:offset}({it:num}) {cmd:alpha}({it:num}) {cmd:droplow} {cmdab:yrev:erse} {cmd:cat}({it:varname}) {cmdab:rec:enter}({it:top}|{it:mid}|{it:bot}) 
-               {cmdab:lc:olor}({it:str}) {cmdab:lw:idth}({it:str}) {cmdab:labs:ize}({it:num}) {cmdab:labc:olor}({it:color}|{it:palette}) {cmd:percent} {cmd:format}({it:str}) {cmdab:nolab:el}
+               {cmdab:lc:olor}({it:str}) {cmdab:lw:idth}({it:str}) {cmdab:labs:ize}({it:num}) {cmdab:labc:olor}({it:color}|{it:palette}) {cmd:percent} {cmd:format}({it:str}) {cmdab:area} {cmdab:nolab:el}
                {cmd:tline} {cmdab:tlc:olor}({it:str}) {cmdab:tlw:idth}({it:str}) {cmdab:tlp:attern}({it:str}) {cmd:yline}({it:str}) {cmd:labprop} {cmd:labscale}({it:num}) {cmd:*}
             {cmd:]}
 
@@ -42,6 +42,8 @@ For brevity, the following can be specified: {it:middle} = {it:mid} = {it:m}, {i
 {p2coldent : {opt yrev:erse}}Reverse the variable labels.{p_end}
 
 {p2coldent : {opt nolab:el}}Hide the variable labels.{p_end}
+
+{p2coldent : {opt area}}Show stacked area graph. Options {opt recenter(bottom)} and {opt smooth(0)} are recommended with this option.{p_end}
 
 {p2coldent : {opt droplow}}If there are fewer than 10 observations per {opt by()} variable, the command will throw an error. If only some groups have this issue, 
 then use the {opt droplow} option to drop these observations. This option is intended to quickly plot the data. Ideally, clean up the data before plotting.{p_end}
@@ -109,8 +111,8 @@ See {browse "https://github.com/asjadnaqvi/stata-streamplot":GitHub}.
 
 {title:Package details}
 
-Version      : {bf:streamplot} v1.8
-This release : 25 Apr 2024
+Version      : {bf:streamplot} v1.81
+This release : 30 Apr 2024
 First release: 06 Aug 2021
 Repository   : {browse "https://github.com/asjadnaqvi/stata-streamplot":GitHub}
 Keywords     : Stata, graph, stream plot
