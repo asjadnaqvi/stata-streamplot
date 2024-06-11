@@ -1,7 +1,7 @@
 {smcl}
-{* 30Apr2024}{...}
+{* 10Jun2024}{...}
 {hi:help streamplot}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.81 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-streamplot":streamplot v1.82 (GitHub)}}
 
 {hline}
 
@@ -15,9 +15,10 @@ The command is based on the following guide on Medium: {browse "https://medium.c
 {p 8 15 2}
 
 {cmd:streamplot} {it:y x} {ifin}, {cmd:by}(varname) 
-            {cmd:[} {cmd:palette}({it:str}) {cmd:smooth}({it:num}) {cmd:labcond}({it:str}) {cmd:offset}({it:num}) {cmd:alpha}({it:num}) {cmd:droplow} {cmdab:yrev:erse} {cmd:cat}({it:varname}) {cmdab:rec:enter}({it:top}|{it:mid}|{it:bot}) 
-               {cmdab:lc:olor}({it:str}) {cmdab:lw:idth}({it:str}) {cmdab:labs:ize}({it:num}) {cmdab:labc:olor}({it:color}|{it:palette}) {cmd:percent} {cmd:format}({it:str}) {cmdab:area} {cmdab:nolab:el}
-               {cmd:tline} {cmdab:tlc:olor}({it:str}) {cmdab:tlw:idth}({it:str}) {cmdab:tlp:attern}({it:str}) {cmd:yline}({it:str}) {cmd:labprop} {cmd:labscale}({it:num}) {cmd:*}
+            {cmd:[} {cmd:palette}({it:str}) {cmd:smooth}({it:num}) {cmd:labcond}({it:str}) {cmd:offset}({it:num}) {cmd:alpha}({it:num}) {cmd:droplow} {cmdab:yrev:erse} {cmd:cat}({it:varname}) 
+               {cmdab:rec:enter}({it:top}|{it:mid}|{it:bot}) {cmdab:lc:olor}({it:str}) {cmdab:lw:idth}({it:str}) {cmdab:labs:ize}({it:num}) {cmdab:labc:olor}({it:color}|{it:palette})
+               {cmd:percent} {cmd:format}({it:str}) {cmdab:area} {cmdab:nolab:el} {cmd:wrap}({it:num}) {cmd:tline} {cmdab:tlc:olor}({it:str}) {cmdab:tlw:idth}({it:str}) 
+               {cmdab:tlp:attern}({it:str}) {cmd:yline}({it:str}) {cmd:labprop} {cmd:labscale}({it:num}) {cmd:wrap}({it:num}) {cmd:*}
             {cmd:]}
 
 
@@ -58,6 +59,8 @@ Default is {stata colorpalette tableau:{it:tableau}}.{p_end}
 
 {p2coldent : {opt offset(num)}}Extends the x-axis range to accommodate labels. The default value is {opt offset(15)} for 15% of {it:xmax-xmin} of the axis range.{p_end}
 
+{p2coldent : {opt wrap(num)}}Wrap the labels after a number of characters. A good starting point for very long labels is {opt wrap(50)}.{p_end}
+
 {p2coldent : {opt labc:olor(str)}}Label colors are either defined as a single color, e.g. default is {opt labc(black)}. Or if {opt labc(palette)} is specified,
 labels have the {opt palette()} colors.{p_end}
 
@@ -89,7 +92,7 @@ For example, {opt labcond(100)} will only shows labels where the last data point
 {p2coldent : {opt labscale(num)}}Scale factor of {opt labprop}. Default value is {opt labscale(0.3333)}. Values closer to zero result in more exponential scaling, while values closer
 to one are almost linear scaling. This is an advanced option so use carefully.{p_end}
 
-{p2coldent : {opt *}}All other standard twoway options unless overwritten by the program.{p_end}
+{p2coldent : {opt *}}All other standard twoway options.{p_end}
 
 {hline}
 
@@ -111,8 +114,8 @@ See {browse "https://github.com/asjadnaqvi/stata-streamplot":GitHub}.
 
 {title:Package details}
 
-Version      : {bf:streamplot} v1.81
-This release : 30 Apr 2024
+Version      : {bf:streamplot} v1.82
+This release : 10 Jun 2024
 First release: 06 Aug 2021
 Repository   : {browse "https://github.com/asjadnaqvi/stata-streamplot":GitHub}
 Keywords     : Stata, graph, stream plot
@@ -121,6 +124,26 @@ License      : {browse "https://opensource.org/licenses/MIT":MIT}
 Author       : {browse "https://github.com/asjadnaqvi":Asjad Naqvi}
 E-mail       : asjadnaqvi@gmail.com
 Twitter      : {browse "https://twitter.com/AsjadNaqvi":@AsjadNaqvi}
+
+
+{title:Feedback}
+
+Please submit bugs, errors, feature requests on {browse "https://github.com/asjadnaqvi/stata-streamplot/issues":GitHub} by opening a new issue.
+
+
+{title:Citation guidelines}
+
+Suggested citation guidlines for this package:
+
+Naqvi, A. (2024). Stata package "streamplot" version 1.82. Release date 10 June 2024. https://github.com/asjadnaqvi/stata-streamplot.
+
+@software{sankey,
+   author = {Naqvi, Asjad},
+   title = {Stata package ``streamplot''},
+   url = {https://github.com/asjadnaqvi/stata-streamplot},
+   version = {1.82},
+   date = {2024-06-10}
+}
 
 
 {title:References}
@@ -134,5 +157,6 @@ Twitter      : {browse "https://twitter.com/AsjadNaqvi":@AsjadNaqvi}
 
 {psee}
     {helpb arcplot}, {helpb alluvial}, {helpb bimap}, {helpb bumparea}, {helpb bumpline}, {helpb circlebar}, {helpb circlepack}, {helpb clipgeo}, {helpb delaunay}, {helpb joyplot}, 
-	{helpb marimekko}, {helpb sankey}, {helpb schemepack}, {helpb spider}, {helpb streamplot}, {helpb sunburst}, {helpb treecluster}, {helpb treemap}, {helpb waffle}
+	{helpb marimekko}, {helpb polarspike}, {helpb sankey}, {helpb schemepack}, {helpb spider}, {helpb streamplot}, {helpb sunburst}, {helpb treecluster}, {helpb treemap}, {helpb waffle}
 
+or visit {browse "https://github.com/asjadnaqvi":GitHub} for detailed documentation and examples.	

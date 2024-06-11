@@ -3,6 +3,6 @@ authors:
 - family-names: "Naqvi"
   given-names: "Asjad"
 title: "Stata package ``streamplot''"
-version: 1.81
-date-released: 2024-04-30
+version: 1.82
+date-released: 2024-06-10
 url: "https://github.com/asjadnaqvi/stata-streamplot"

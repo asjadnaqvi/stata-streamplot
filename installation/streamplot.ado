@@ -1,7 +1,8 @@
-*! streamplot v1.81 (30 Apr 2024)
+*! streamplot v1.82 (10 Jun 2024)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
-* v1.81	(30 Apr 2024): added area option to creat
+* v1.82	(10 Jun 2024): add wrap() for label wraps.
+* v1.81	(30 Apr 2024): added area option to create stacked area plots.
 * v1.8	(25 Apr 2024): added labscale option. Added percent/share as substitutes. more flexible for generic options.
 * v1.7	(01 Apr 2024): trendline, yline, drop if by() is missing
 * v1.61 (15 Jan 2024): fixed wrong locals. changed ylab to just lab.
@@ -28,7 +29,7 @@ version 15
 		[ NOLABel nodraw  ]  /// v1.5x
 		[ cat(varname) YREVerse  ]  ///  // v1.6
 		[ tline TLColor(string) TLWidth(string) TLPattern(string) droplow 	 ] ///	// v1.7
-		[ * labprop labscale(real 0.3333) percent share area ]  // 1.8 options
+		[ * labprop labscale(real 0.3333) percent share area  wrap(numlist >=0 max=1)  ]  // 1.8 options
 		
 		
 	// check dependencies
@@ -352,6 +353,19 @@ preserve
 	else {
 		gen _label  = _yname + " (" + string(_yval, "`format'")  + ")" if _yval!=.     //if last==1 & `labvar' >= `labcond' 
 	}
+	
+	if "`wrap'" != "" {
+		gen _length = length(_label) if _label!= ""
+		summ _length, meanonly		
+		local _wraprounds = floor(`r(max)' / `wrap')
+		
+		forval i = 1 / `_wraprounds' {
+			local wraptag = `wrap' * `i'
+			replace _label = substr(_label, 1, `wraptag') + "`=char(10)'" + substr(_label, `=`wraptag' + 1', .) if _length > `wraptag' & _label!= "" 
+		}
+		
+		drop _length
+	}		
 
 	
 	if "`labsize'"  == "" 			local labsize 1.6

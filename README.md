@@ -3,15 +3,15 @@
 
 ---
 
-[Installation](#Installation) | [Syntax](#Syntax) | [Examples](#Examples) | [Feedback](#Feedback) | [Change log](#Change-log)
+[Installation](#Installation) | [Syntax](#Syntax) | [Citation guidelines](#Citation-guidelines) |  [Examples](#Examples) | [Feedback](#Feedback) | [Change log](#Change-log)
 
 ---
 
 ![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-streamplot) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-streamplot) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-streamplot) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-streamplot) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-streamplot)
 
 
-# streamplot v1.81
-(30 Apr 2024)
+# streamplot v1.82
+(10 Jun 2024)
 
 This package provides the ability to generate stream plots in Stata. It is based on the [Streamplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-10-stream-graphs-9d55db12318a) (December 2020).
 
@@ -25,7 +25,7 @@ SSC (**v1.81**):
 ssc install streamplot, replace
 ```
 
-GitHub (**v1.81**):
+GitHub (**v1.82**):
 
 ```
 net install streamplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-streamplot/main/installation/") replace
@@ -76,6 +76,36 @@ streamplot y x, by(varname)
 ```
 
 where `y` is the variable we want to plot, and `x` is usually the time dimension. The `by` variable splits the data into different groupings that also determines the colors. The color schemes can be modified using the `palettes(name)` option. Here any scheme from the `colorpalettes` package can be used.
+
+
+## Citation guidelines
+Software packages take countless hours of programming, testing, and bug fixing. If you use this package, then a citation would be highly appreciated. Suggested citations:
+
+
+*in BibTeX*
+
+```
+@software{streamplot,
+   author = {Naqvi, Asjad},
+   title = {Stata package ``streamplot''},
+   url = {https://github.com/asjadnaqvi/stata-streamplot},
+   version = {1.82},
+   date = {2024-06-10}
+}
+```
+
+*or simple text*
+
+```
+Naqvi, A. (2024). Stata package "streamplot" version 1.82. Release date 10 June 2024. https://github.com/asjadnaqvi/stata-streamplot.
+```
+
+
+*or see [SSC citation](https://ideas.repec.org/c/boc/bocode/s459060.html) (updated once a new version is submitted)*
+
+```
+Asjad Naqvi, 2022. "SANKEY: Stata module for Sankey diagrams," Statistical Software Components S459154, Boston College Department of Economics, revised 17 May 2024.
+```
 
 
 
@@ -343,6 +373,10 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to
 
 
 ## Change log
+
+**v1.82 (10 Jun 2024)**
+- Added `wrap()` option for label wrapping.
+- Minor code fixes.
 
 **v1.81 (30 Apr 2024)**
 - Added `area` option to allow stacked area graphs.
