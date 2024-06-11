@@ -137,7 +137,7 @@ Suggested citation guidlines for this package:
 
 Naqvi, A. (2024). Stata package "streamplot" version 1.82. Release date 10 June 2024. https://github.com/asjadnaqvi/stata-streamplot.
 
-@software{sankey,
+@software{streamplot,
    author = {Naqvi, Asjad},
    title = {Stata package ``streamplot''},
    url = {https://github.com/asjadnaqvi/stata-streamplot},
