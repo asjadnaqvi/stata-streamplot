@@ -1,17 +1,18 @@
 
-![streamplot](https://github.com/asjadnaqvi/stata-streamplot/assets/38498046/4b7bbaab-8667-4f47-a119-ec93dcd607a3)
 
----
+![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-streamplot) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-streamplot) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-streamplot) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-streamplot) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-streamplot)
+
 
 [Installation](#Installation) | [Syntax](#Syntax) | [Citation guidelines](#Citation-guidelines) |  [Examples](#Examples) | [Feedback](#Feedback) | [Change log](#Change-log)
 
 ---
 
-![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-streamplot) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-streamplot) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-streamplot) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-streamplot) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-streamplot)
+
+![streamplot](https://github.com/asjadnaqvi/stata-streamplot/assets/38498046/4b7bbaab-8667-4f47-a119-ec93dcd607a3)
 
 
-# streamplot v1.82
-(10 Jun 2024)
+# streamplot v1.9
+(08 Feb 2024)
 
 This package provides the ability to generate stream plots in Stata. It is based on the [Streamplot Guide](https://medium.com/the-stata-guide/covid-19-visualizations-with-stata-part-10-stream-graphs-9d55db12318a) (December 2020).
 
@@ -25,18 +26,19 @@ SSC (**v1.82**):
 ssc install streamplot, replace
 ```
 
-GitHub (**v1.82**):
+GitHub (**v1.9**):
 
 ```
 net install streamplot, from("https://raw.githubusercontent.com/asjadnaqvi/stata-streamplot/main/installation/") replace
 ```
 
 
-The `palettes` package is required to run this command:
+The following dependencies are required:
 
-```
+```stata
 ssc install palettes, replace
 ssc install colrspace, replace
+ssc install graphfunctions, replace
 ```
 
 If you want to make a clean figure, then it is advisable to load a clean scheme. These are several available and I personally use the following:
@@ -48,7 +50,7 @@ set scheme white_tableau
 
 I also prefer narrow fonts in figures with long labels. You can change this as follows:
 
-```
+```stata
 graph set window fontface "Arial Narrow"
 ```
 
@@ -59,11 +61,10 @@ The syntax for the latest version is as follows:
 
 ```stata
 streamplot y x [if] [in], by(varname) 
-            [ palette(str) smooth(num) labcond(str) offset(num) alpha(num) droplow yreverse cat(varname) recenter(top|mid|bot) 
-               lcolor(str) lwidth(str) labsize(num) labcolor(color|palette) percent format(str) nolabel area
-               tline tlcolor(str) tlwidth(str) tlpattern(str) yline(str)
-               xlabel(str) xtitle(str) ytitle(str) title(str) subtitle(str) note(str) 
-               ysize(num) xsize(num) scheme(str) aspect(str) name(str) saving(str)
+            [ palette(str) smooth(num) labcond(str) offset(num) alpha(num) yreverse cat(varname) 
+               recenter(top|mid|bot) lcolor(str) lwidth(str) labsize(num) labcolor(color|palette)
+               percent format(str) area nolabel wrap(num) tline tlcolor(str) tlwidth(str) 
+               tlpattern(str) yline(str) labprop labscale(num) wrap(num) *
             ]
 ```
 
@@ -71,7 +72,7 @@ See the help file `help streamplot` for details.
 
 The most basic use is as follows:
 
-```
+```stata
 streamplot y x, by(varname)
 ```
 
@@ -79,29 +80,9 @@ where `y` is the variable we want to plot, and `x` is usually the time dimension
 
 
 ## Citation guidelines
-Software packages take countless hours of programming, testing, and bug fixing. If you use this package, then a citation would be highly appreciated. Suggested citations:
+Software packages take countless hours of programming, testing, and bug fixing. If you use this package, then a citation would be highly appreciated. 
 
-
-*in BibTeX*
-
-```
-@software{streamplot,
-   author = {Naqvi, Asjad},
-   title = {Stata package ``streamplot''},
-   url = {https://github.com/asjadnaqvi/stata-streamplot},
-   version = {1.82},
-   date = {2024-06-10}
-}
-```
-
-*or simple text*
-
-```
-Naqvi, A. (2024). Stata package "streamplot" version 1.82. Release date 10 June 2024. https://github.com/asjadnaqvi/stata-streamplot.
-```
-
-
-*or see [SSC citation](https://ideas.repec.org/c/boc/bocode/s459060.html) (updated once a new version is submitted)*
+The [SSC citation](https://ideas.repec.org/c/boc/bocode/s459060.html) is recommended. Please note that the GitHub version might be newer than the SSC version.
 
 
 
@@ -109,7 +90,7 @@ Naqvi, A. (2024). Stata package "streamplot" version 1.82. Release date 10 June 
 
 Set up the data:
 
-```
+```stata
 clear
 set scheme white_tableau
 graph set window fontface "Arial Narrow"
@@ -120,13 +101,13 @@ use "https://github.com/asjadnaqvi/stata-streamplot/blob/main/data/streamdata.dt
 
 We can generate basic graphs as follows:
 
-```
+```stata
 streamplot new_cases date, by(region) 
 ```
 
 <img src="/figures/streamplot1.png" width="100%">
 
-```
+```stata
 streamplot new_cases date if date > 22400, by(region) smooth(6)
 ```
 
@@ -134,20 +115,20 @@ streamplot new_cases date if date > 22400, by(region) smooth(6)
 
 Recenter the graphs to top or bottom:
 
-```
+```stata
 streamplot new_cases date if date > 22400, by(region) smooth(6) recenter(bot)
 ```
 
 <img src="/figures/streamplot2_1.png" width="100%">
 
-```
+```stata
 streamplot new_cases date if date > 22400, by(region) smooth(6) recenter(top)
 ```
 
 <img src="/figures/streamplot2_2.png" width="100%">
 
 
-```
+```stata
 streamplot new_cases date if date > 22400, by(region) smooth(6) ///
 	labcond(20000) ylabsize(1.8) lc(black) lw(0.04)
 ```
@@ -155,7 +136,7 @@ streamplot new_cases date if date > 22400, by(region) smooth(6) ///
 <img src="/figures/streamplot3.png" width="100%">
 
 
-```
+```stata
 streamplot new_cases date if date > 22400, by(region) smooth(6) ///
 	labcond(20000) ylabsize(1.8) lc(black) lw(0.04) format(%12.0fc) offset(20)
 ```
@@ -163,14 +144,14 @@ streamplot new_cases date if date > 22400, by(region) smooth(6) ///
 <img src="/figures/streamplot3_1.png" width="100%">
 
 
-```
+```stata
 streamplot new_cases date if date > 22400, by(region) smooth(6) palette(CET D11) ///
 	labcond(2) ylabsize(1.8) lc(black) lw(0.04)  percent format(%3.2f) offset(20) ylabc(red)
 ```
 
 <img src="/figures/streamplot3_2.png" width="100%">
 
-```
+```stata
 streamplot new_cases date if date > 22400, by(region) smooth(6) palette(CET C6, reverse) ///
 	labcond(1) ylabsize(1.8) lc(black) lw(0.04)  percent format(%3.2f) offset(20) ylabc(palette)
 ```
@@ -178,7 +159,16 @@ streamplot new_cases date if date > 22400, by(region) smooth(6) palette(CET C6, 
 <img src="/figures/streamplot3_3.png" width="100%">
 
 
+Test label wrapping and condition the labels:
+
+```stata
+streamplot new_cases date if date > 22400, by(region) smooth(6) palette(CET C6, reverse) wrap(25) labprop ///
+	labcond(4e4) labsize(1.8) lc(black) lw(0.04)  offset(20) labc(palette)
 ```
+
+<img src="/figures/streamplot3_4.png" width="100%">
+
+```stata
 qui summ date if date > 22400
 
 local xmin = `r(min)'
@@ -369,6 +359,11 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to
 
 
 ## Change log
+
+**v1.9 (08 Feb 2025)**
+- `droplow` has been taken out. All categories are now plotted even if they have one observation. If categories end in the middle, they are not labeled.
+- The option `wrap` now requires the [graphfunctions](https://github.com/asjadnaqvi/stata-graphfunctions) package. Word boundaries are now respected.
+- Fixed several bugs.
 
 **v1.82 (10 Jun 2024)**
 - Added `wrap()` option for label wrapping.

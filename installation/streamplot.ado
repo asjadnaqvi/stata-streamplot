@@ -1,6 +1,7 @@
-*! streamplot v1.82 (10 Jun 2024)
+*! streamplot v1.9 (08 Feb 2025)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+* v1.9  (08 Feb 2025): droplow taken out. all categories will now draw. label wrapping improved. more checks added.
 * v1.82	(10 Jun 2024): add wrap() for label wraps.
 * v1.81	(30 Apr 2024): added area option to create stacked area plots.
 * v1.8	(25 Apr 2024): added labscale option. Added percent/share as substitutes. more flexible for generic options.
@@ -17,6 +18,7 @@
 * v1.0  (06 Aug 2021): Beta version
 
 
+
 cap program drop streamplot
 
 program streamplot, sortpreserve
@@ -24,31 +26,33 @@ program streamplot, sortpreserve
 version 15
  
 	syntax varlist(min=2 max=2 numeric) [if] [in], by(varname)  ///
-		[ palette(string) alpha(real 100) smooth(real 3) LColor(string)  LWidth(string) labcond(real 0) ] 		///					
-		[ LABSize(string) LABColor(string) offset(real 15) format(string) RECenter(string) ]  ///
-		[ NOLABel nodraw  ]  /// v1.5x
-		[ cat(varname) YREVerse  ]  ///  // v1.6
-		[ tline TLColor(string) TLWidth(string) TLPattern(string) droplow 	 ] ///	// v1.7
-		[ * labprop labscale(real 0.3333) percent share area  wrap(numlist >=0 max=1)  ]  // 1.8 options
+		[ palette(string) alpha(real 100) smooth(real 3) LColor(string)  LWidth(string) labcond(real 0) ] 	///					
+		[ LABSize(string) LABColor(string) offset(real 15) format(string) RECenter(string) 				]	///
+		[ NOLABel cat(varname) YREVerse  																]  ///  //  v1.5x v1.6
+		[ tline TLColor(string) TLWidth(string) TLPattern(string)  	 									] ///	// v1.7
+		[ * labprop labscale(real 0.3333) percent share area wrap(numlist >=0 max=1)  ]  // 1.8 options
 		
 		
 	// check dependencies
-	capture findfile colorpalette.ado
+	cap findfile colorpalette.ado
 	if _rc != 0 {
-		display as error "colorpalette package is missing. Install the {stata ssc install colorpalette, replace:colorpalette} and {stata ssc install colrspace, replace:colrspace} packages."
+		display as error "The palettes package is missing. Please install the {stata ssc install palettes, replace:palettes} and {stata ssc install colrspace, replace:colrspace} packages."
 		exit
 	}
+
+	cap findfile labmask.ado
+		if _rc != 0 quietly ssc install labutil, replace
 	
-	capture findfile labmask.ado
-	if _rc != 0 {
-		qui ssc install labutil, replace
-	}
+	cap findfile labsplit.ado
+		if _rc != 0 quietly ssc install graphfunctions, replace	
+	
+	
 	
 	marksample touse, strok
 	gettoken yvar xvar : varlist 	
 
 	if "`cat'"!= "" {
-		qui levelsof `cat'
+		quietly levelsof `cat'
 		if r(r) > 2 {
 			di as error "`cat' in cat() is not a binary variable."
 			exit 198
@@ -57,21 +61,13 @@ version 15
 
 
 
-qui {
+quietly {
 preserve	
 	
 	keep if `touse'
-	
-	cap confirm numeric var `by'	
-		if !_rc {  
-			drop if `by'==.
-		}
-		else {
-			drop if `by'==""
-		}
-	
-	recode `yvar' (. = 0)
-	
+
+	drop if missing(`by')
+		
 	if "`cat'"=="" {
 		gen _cat = 1  // run a dummy
 		local cat _cat
@@ -83,44 +79,16 @@ preserve
 	
 	collapse (sum) `yvar', by(`xvar' `by' `cat')
 	
-
-	gen _ones = 1
-	bysort `by': egen counts = sum(_ones)
-	egen tag = tag(`by')
-	summ counts, meanonly
-	  
-	if r(min) < 10 {
-		if "`droplow'" == "" {	
-			count if counts < 10 & tag==1
-			di as error "Groups with errors:"
-			noi list `by' if counts < 10 & tag==1
-			di as error "`r(N)' group(s) (`by') have fewer than 10 observations which is insufficient to use {stata help streamplot:streamplot}."
-			exit
-		}	
-		else {
-			drop if counts < 10
-		}
-	}
+	fillin `by' `xvar'
 	
-	count
-	if r(N) == 0 {
-		di as error "No groups fulfill the criteria for {stata help streamplot:streamplot}."
-		exit
-	}
-	
-	drop _ones tag counts
-	
-	fillin  `by' `xvar' 
+	replace `yvar' = 0 if `yvar' < 0	 // this is technically wrong but we do it anyways 
 	recode `yvar' (.=0)
+	
 	sort `by' `cat' `xvar'
-	
-	
-	
-	// pass on cat variable to added observations
-	
 	bysort `by': replace `cat' = `cat'[1] if `cat'==.
-	cap drop _fillin
-
+	cap drop _fillin	
+	
+	
 	egen _order = group(`cat' `by')  // this is the primary order category
 	
 
@@ -169,15 +137,10 @@ preserve
 	}		
 	
 	
-	
 	keep  `xvar' `cat' `by' `yvar' 
 	order `xvar' `cat' `by' `yvar' 
 	
 	xtset `by' `xvar'  
-	
-	
-	replace `yvar' = 0 if `yvar' < 0	 // this is technically wrong but we do it anyways   // fix in later versions
-	
 	
 	if "`area'" != "" {
 		bysort `xvar': egen double _sum = sum(`yvar')
@@ -189,12 +152,12 @@ preserve
 	tssmooth ma _ma  = `yvar' , w(`smooth' 1 0) 
 
 	// add the range variable on the x-axis
-	summ `xvar' if _ma != ., meanonly
-	
+
 	if "`nolabel'"!="" local offset 0  // reset to 0
 	
-	local xrmin = r(min)
-	local xrmax = r(max) + ((r(max) - r(min)) * (`offset' / 100)) 
+	summ `xvar' if _ma != ., meanonly
+		local xrmin = r(min)
+		local xrmax = r(max) + ((r(max) - r(min)) * (`offset' / 100)) 
 	
 
 	sort `xvar' `by' // extremely important for stack order.	
@@ -241,7 +204,6 @@ preserve
 	
 	cap drop `cat' _temp _nsval
 
-	
 	reshape wide _stack _yvar _ma  , i(`xvar' _linevar) j(`by')  
 
 	foreach x of local idlabels {        // here we know how many variables we have    
@@ -254,8 +216,7 @@ preserve
 	
 	gen _stack0 = 0  // we need this for area graphs
 
-	
-	
+
 	order `xvar' _stack0
 	
 	
@@ -288,7 +249,6 @@ preserve
 	}
 	
 	
-	
 	foreach x of varlist _stack* {
 		gen double `x'_norm  = `x' - _meanval
 	}	
@@ -314,14 +274,11 @@ preserve
 		local t : var lab _ma`i1'
 		
 		replace _ylab  = (_stack`i0'_norm[_N] + _stack`i1'_norm[_N]) / 2 in `counter'
-		
 		replace _yval = _yvar`i1'[_N] in `counter'
-		
 		replace _yname = "`t'" in `counter'
 		
 		local ++counter
 	}
-
 
 	sum _yval, meanonly
 	replace _yshare = (_yval / `r(sum)') * 100
@@ -348,26 +305,19 @@ preserve
 	
    
 	if "`percent'" != "" | "`share'"!="" {
-		gen _label  = _yname + " (" + string(_yshare, "`format'")  + "%)" if _yval!=.  
+		gen _label  = _yname + " (" + string(_yshare, "`format'")  + "%)" if _yval>0 & !missing(_yval)
 	}
 	else {
-		gen _label  = _yname + " (" + string(_yval, "`format'")  + ")" if _yval!=.     //if last==1 & `labvar' >= `labcond' 
+		gen _label  = _yname + " (" + string(_yval, "`format'")  + ")" if _yval>0  & !missing(_yval)    //if last==1 & `labvar' >= `labcond' 
 	}
 	
-	if "`wrap'" != "" {
-		gen _length = length(_label) if _label!= ""
-		summ _length, meanonly		
-		local _wraprounds = floor(`r(max)' / `wrap')
-		
-		forval i = 1 / `_wraprounds' {
-			local wraptag = `wrap' * `i'
-			replace _label = substr(_label, 1, `wraptag') + "`=char(10)'" + substr(_label, `=`wraptag' + 1', .) if _length > `wraptag' & _label!= "" 
-		}
-		
-		drop _length
-	}		
-
 	
+	if "`wrap'" != "" {
+		ren _label _label2
+		labsplit _label2, wrap(`wrap') gen(_label)
+	}		
+	
+
 	if "`labsize'"  == "" 			local labsize 1.6
 	if "`lcolor'"    == "" 			local lcolor white
 	if "`lwidth'"    == "" 			local lwidth  0.05
@@ -382,7 +332,6 @@ preserve
 	}		
 	
 	
-
 	summ _stack0_norm, meanonly	
 
 	if "`recenter'" == "" | "`recenter'" == "middle" | "`recenter'" == "mid"  | "`recenter'" == "m" { 
@@ -414,7 +363,6 @@ preserve
 	
 
 	if "`tline'" != "" {
-		
 		if "`tlcolor'"   == "" 	local tlcolor black
 		if "`tlwidth'"   == "" 	local tlwidth 0.3
 		if "`tlpattern'" == "" 	local tlpattern solid
@@ -424,7 +372,7 @@ preserve
 	
 
 
-	if "`nolabel'"=="" & "`labprop'" == "" & "`labcolor'" =="" {
+	if "`nolabel'"=="" & "`labprop'" == "" & "`labcolor'" !="palette" {
 		local labels  `labels'  (scatter _ylab _xlab if _yval >= `labcond' , mlabel(_label) mcolor(none) mlabsize(`labsize') mlabcolor("`labcolor'")) 
 	}
 	
@@ -485,7 +433,6 @@ preserve
 			, ///
 				legend(off) ///
 				yscale(noline) ///
-				ytitle("") `xtitle'  ///
 				ylabel(`ymin' `ymax', nolabels noticks nogrid) ///
 				xscale(noline range(`xrmin' `xrmax')) ///
 				`options'  
