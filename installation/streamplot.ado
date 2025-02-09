@@ -1,7 +1,7 @@
 *! streamplot v1.9 (08 Feb 2025)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
-* v1.9  (08 Feb 2025): droplow taken out. all categories will now draw. label wrapping improved. more checks added.
+* v1.9  (08 Feb 2025): droplow taken out. all categories will now draw. label wrapping improved. more checks added. Added laboffset
 * v1.82	(10 Jun 2024): add wrap() for label wraps.
 * v1.81	(30 Apr 2024): added area option to create stacked area plots.
 * v1.8	(25 Apr 2024): added labscale option. Added percent/share as substitutes. more flexible for generic options.
@@ -30,7 +30,7 @@ version 15
 		[ LABSize(string) LABColor(string) offset(real 15) format(string) RECenter(string) 				]	///
 		[ NOLABel cat(varname) YREVerse  																]  ///  //  v1.5x v1.6
 		[ tline TLColor(string) TLWidth(string) TLPattern(string)  	 									] ///	// v1.7
-		[ * labprop labscale(real 0.3333) percent share area wrap(numlist >=0 max=1)  ]  // 1.8 options
+		[ * labprop labscale(real 0.3333) percent share area wrap(numlist >=0 max=1) LABOFFset(real 0) 		]  // 1.8 options
 		
 		
 	// check dependencies
@@ -284,7 +284,7 @@ preserve
 	replace _yshare = (_yval / `r(sum)') * 100
 
 	summ `xvar', meanonly
-	gen _xlab = r(max) if _yval!=.
+	gen _xlab = r(max) + `laboffset' if _yval!=.
 	
 	**** automate this part
 

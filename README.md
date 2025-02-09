@@ -363,6 +363,7 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-streamplot/issues) to
 **v1.9 (08 Feb 2025)**
 - `droplow` has been taken out. All categories are now plotted even if they have one observation. If categories end in the middle, they are not labeled.
 - The option `wrap` now requires the [graphfunctions](https://github.com/asjadnaqvi/stata-graphfunctions) package. Word boundaries are now respected.
+- `laboffset()` added to displace labels. Negative values would make the labels closer to the stream.
 - Fixed several bugs.
 
 **v1.82 (10 Jun 2024)**

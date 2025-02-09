@@ -18,7 +18,7 @@ The command is based on the following guide on Medium: {browse "https://medium.c
             {cmd:[} {cmd:palette}({it:str}) {cmd:smooth}({it:num}) {cmd:labcond}({it:str}) {cmd:offset}({it:num}) {cmd:alpha}({it:num}) {cmdab:yrev:erse} {cmd:cat}({it:varname}) 
                {cmdab:rec:enter}({it:top}|{it:mid}|{it:bot}) {cmdab:lc:olor}({it:str}) {cmdab:lw:idth}({it:str}) {cmdab:labs:ize}({it:num}) {cmdab:labc:olor}({it:color}|{it:palette})
                {cmd:percent} {cmd:format}({it:str}) {cmdab:area} {cmdab:nolab:el} {cmd:wrap}({it:num}) {cmd:tline} {cmdab:tlc:olor}({it:str}) {cmdab:tlw:idth}({it:str}) 
-               {cmdab:tlp:attern}({it:str}) {cmd:yline}({it:str}) {cmd:labprop} {cmd:labscale}({it:num}) {cmd:wrap}({it:num}) {cmd:*}
+               {cmdab:tlp:attern}({it:str}) {cmd:yline}({it:str}) {cmdab:laboff:set}({it:num})  {cmd:labprop} {cmd:labscale}({it:num}) {cmd:wrap}({it:num}) {cmd:*}
             {cmd:]}
 
 
@@ -61,13 +61,13 @@ Default is {stata colorpalette tableau:{it:tableau}}.{p_end}
 {p2coldent : {opt labc:olor(str)}}Label colors are either defined as a single color, e.g. default is {opt labc(black)}. Or if {opt labc(palette)} is specified,
 labels have the {opt palette()} colors.{p_end}
 
-{p2coldent : {opt labs:ize(str)}}Size of the stream labels. Default value is {opt labs(1.4)}.{p_end}
+{p2coldent : {opt labs:ize(str)}}Size of the stream labels. The default value is {opt labs(1.4)}.{p_end}
 
 {p2coldent : {opt percent}}Shows the percentage share for the y-axis categories.{p_end}
 
-{p2coldent : {opt format()}}Format the values of the y-axis category. Default value is {opt format(%12.0f)}.{p_end}
+{p2coldent : {opt format(fmt)}}Format the values of the y-axis category. The default is {opt format(%12.0f)}.{p_end}
 
-{p2coldent : {opt xlabel()}}This is the standard twoway graph option for labeling and formatting the x-axis. {p_end}
+{p2coldent : {opt laboff:set(num)}}Offset the stream labels. Negative values will offset towards the left. The default is {opt laboff(0)}.{p_end}
 
 {p2coldent : {opt labcond(num)}}The label condition can be used to limit the number of labels shown. 
 For example, {opt labcond(100)} will only shows labels where the last data point value is greater than 100.{p_end}
